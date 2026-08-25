@@ -217,11 +217,9 @@ if (passwordInput) {
       const el = document.querySelector(`[data-testid="rule-${rule}"]`);
       if (el) {
         if (valid) {
-          el.classList.add("valid");
-          el.querySelector(".rule-icon").textContent = "✓";
+          el.classList.add("password-rules__item--valid");
         } else {
-          el.classList.remove("valid");
-          el.querySelector(".rule-icon").textContent = "○";
+          el.classList.remove("password-rules__item--valid");
         }
       }
     });

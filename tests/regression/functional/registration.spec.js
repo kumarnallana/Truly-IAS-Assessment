@@ -19,11 +19,9 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
       await route.fulfill({ body: JSON.stringify({ qrCodeDataUrl: 'data:image/png;base64,...', base32Secret: 'SECRET123', challengeId: 'mfa-challenge' }), contentType: 'application/json' });
     });
     await page.route('**/api/verify-mfa-setup', async route => {
+    await page.route('**/api/verify-mfa-setup', async route => {
       await route.fulfill({ body: JSON.stringify({ registrationComplete: true }), contentType: 'application/json' });
     });
-
-    page.on('request', req => console.log('>>', req.method(), req.url()));
-    page.on('response', res => console.log('<<', res.status(), res.url()));
 
     await page.goto('/index.html');
 
@@ -44,17 +42,6 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     // 3. Submit
     await page.getByRole('button', { name: 'Create Account' }).click();
 
-    await page.waitForTimeout(1000);
-    const pageErrors = await page.evaluate(() => {
-      return Array.from(document.querySelectorAll('.form-field__error-text, .alert-banner--error'))
-        .filter(e => e.style.display !== 'none' && !e.classList.contains('hidden'))
-        .map(e => e.id || e.getAttribute('data-testid') + ': ' + e.textContent);
-    });
-    console.log("VISIBLE ERRORS:", pageErrors);
-    
-    const activeScreen = await page.evaluate(() => document.querySelector('.screen[data-active="true"]')?.getAttribute('data-testid'));
-    console.log("ACTIVE SCREEN:", activeScreen);
-
     // 4. Expect transition to Email OTP
     await expect(page.getByRole('heading', { name: 'Verify your email' })).toBeVisible();
     await expect(page.getByText('priya.sharma@email.com')).toBeVisible();
@@ -63,19 +50,7 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     for (let i = 0; i < 6; i++) {
       await emailInputs.nth(i).fill('1');
     }
-    const otpValue = await page.evaluate(() => {
-      return Array.from(document.querySelectorAll('[data-testid="email-otp-group"] input')).map(i => i.value).join("");
-    });
-    console.log("OTP VALUE IN DOM:", otpValue);
-    
-    // ensure click happens
-    await page.getByRole('button', { name: 'Verify Email' }).click({ force: true });
-
-    await page.waitForTimeout(1000);
-    const emailOtpError = await page.evaluate(() => document.querySelector('[data-testid="email-otp-error"]')?.textContent);
-    console.log("EMAIL OTP ERROR:", emailOtpError);
-    const activeScreenAfterEmail = await page.evaluate(() => document.querySelector('.screen[data-active="true"]')?.getAttribute('data-testid'));
-    console.log("ACTIVE SCREEN AFTER EMAIL:", activeScreenAfterEmail);
+    // Auto-submit triggers API and transitions
 
     // 5. Expect transition to Mobile OTP
     await expect(page.getByRole('heading', { name: 'Verify your mobile' })).toBeVisible();
@@ -85,6 +60,7 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     for (let i = 0; i < 6; i++) {
       await mobileInputs.nth(i).fill('1');
     }
+    // Auto-submit triggers API and transitions
 
     // 6. Expect transition to MFA Choice
     await expect(page.getByRole('heading', { name: 'Set up Multi-Factor Auth' })).toBeVisible();
