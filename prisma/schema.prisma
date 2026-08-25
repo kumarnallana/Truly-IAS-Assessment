@@ -1,0 +1,68 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+}
+
+enum OtpChannel {
+  EMAIL
+  SMS
+}
+
+enum OtpPurpose {
+  REGISTRATION_EMAIL
+  REGISTRATION_SMS
+  MFA_VERIFY_SMS
+  MFA_VERIFY_EMAIL
+  MFA_TOTP_SETUP
+  MFA_TOTP_VERIFY
+}
+
+enum MfaMethod {
+  AUTHENTICATOR
+  SMS
+  EMAIL
+}
+
+model User {
+  id                  String         @id @default(cuid())
+  name                String
+  email               String         @unique
+  passwordHash        String
+  status              UserStatus     @default(PENDING)
+  emailVerified       Boolean        @default(false)
+  phone               String?
+  phoneVerified       Boolean        @default(false)
+  mfaEnabled          Boolean        @default(false)
+  mfaMethod           MfaMethod?
+  totpSecretEncrypted String?        // AES-256-GCM ciphertext
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  challenges          OtpChallenge[]
+}
+
+model OtpChallenge {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel     OtpChannel
+  purpose     OtpPurpose
+  otpHash     String
+  expiresAt   DateTime
+  attempts    Int        @default(0)
+  maxAttempts Int        @default(5)
+  consumedAt  DateTime?
+  createdAt   DateTime   @default(now())
+
+  @@index([userId, channel, purpose])
+  @@index([expiresAt])
+}
