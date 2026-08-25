@@ -1,0 +1,55 @@
+/* ==========================================================================
+   Component: AuthHeader
+   Description: Top branding header (with icon and SecureID text)
+   ========================================================================== */
+.auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .auth-card__top-bar .auth-header {
+    margin-bottom: 0;
+    justify-content: flex-start;
+  }
+  
+  .auth-header--mobile-only {
+    display: none;
+  }
+}
+
+.auth-header__icon {
+  width: 32px;
+  height: 32px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Screen Headers (Inside the card) */
+.screen-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.screen-header__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.5rem;
+}
+
+.screen-header__subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}

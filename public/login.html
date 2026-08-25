@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureID — Part 2 Login Journey</title>
+  <meta name="description" content="SecureID Authentication - Login">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Main Card Shell -->
+  <main class="auth-card auth-card--login">
+    
+    <div class="auth-card__brand-panel">
+      <!-- Shield Logo, SecureID, Access Text -->
+      <div class="auth-header__icon" style="font-size: 3rem; margin-bottom: 1.5rem; color: #FFF;">🛡️</div>
+      <h2 style="margin-bottom: 1rem; font-size: 1.75rem;">SecureID</h2>
+      <p style="opacity: 0.9; font-size: 1rem; max-width: 250px; line-height: 1.5;">Secure access to your enterprise applications</p>
+    </div>
+
+    <div class="auth-card__form-panel">
+      <header class="auth-header auth-header--mobile-only">
+        <div class="auth-header__icon">🛡️</div>
+        <span>SecureID</span>
+      </header>
+
+    <!-- ====================================================================
+         SCREEN 1: Login (Default) & 2: Invalid Credentials
+         ==================================================================== -->
+    <section data-testid="login-screen" class="screen" data-active="true" aria-labelledby="title-login">
+      <div class="screen-header">
+        <h1 id="title-login" class="screen-header__title">Welcome back!</h1>
+        <p class="screen-header__subtitle">Login to your account</p>
+      </div>
+
+      <div data-testid="error-login" class="alert-banner alert-banner--error hidden" role="alert">
+        Invalid email or password. Please try again.
+      </div>
+
+      <form data-testid="login-form" novalidate>
+        <!-- Email/Username -->
+        <div class="form-field">
+          <input
+            type="email"
+            id="login-email"
+            data-testid="login-email"
+            class="form-field__input"
+            placeholder="Email or Username"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <!-- Password -->
+        <div class="form-field">
+          <div class="form-field__password-wrapper">
+            <input
+              type="password"
+              id="login-password"
+              data-testid="login-password"
+              class="form-field__input"
+              placeholder="••••••••••••"
+              autocomplete="current-password"
+              required
+            >
+            <button type="button" data-testid="toggle-login-password-btn" class="form-field__password-toggle" aria-label="Toggle password visibility">
+              👁
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+          <label class="form-field__checkbox-label" style="margin-bottom:0;">
+            <input type="checkbox" data-testid="login-remember">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="btn--link" data-testid="forgot-password-link">Forgot password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" data-testid="login-submit-btn" class="btn btn--primary mb-4">Login</button>
+        
+        <div class="text-center mb-4" style="color:var(--color-text-muted); font-size:0.875rem;">or</div>
+
+        <button type="button" data-testid="login-google-btn" class="btn btn--secondary">
+          Continue with Google
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        New here? <a href="/index.html" data-testid="register-link">Create an account</a>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 3: Choose Method (MFA)
+         ==================================================================== -->
+    <section data-testid="login-mfa-choice-screen" class="screen" aria-labelledby="title-mfa-choice">
+      <div class="screen-header">
+        <h1 id="title-mfa-choice" class="screen-header__title">Verify your identity</h1>
+        <p class="screen-header__subtitle">Choose a method to continue</p>
+      </div>
+
+      <form data-testid="login-mfa-choice-form">
+        <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom: 2rem;">
+          <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border-focus); border-radius:var(--radius-md); cursor:pointer;">
+            <input type="radio" name="login-mfa-method" value="EMAIL" checked>
+            <div style="font-size:1.5rem;">✉️</div>
+            <div>
+              <div class="text-bold">Email OTP</div>
+              <div style="font-size:0.8125rem; color:var(--color-text-muted);">Receive a code on your email</div>
+            </div>
+          </label>
+
+          <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border); border-radius:var(--radius-md); cursor:pointer;">
+            <input type="radio" name="login-mfa-method" value="SMS">
+            <div style="font-size:1.5rem;">💬</div>
+            <div>
+              <div class="text-bold">SMS OTP</div>
+              <div style="font-size:0.8125rem; color:var(--color-text-muted);">Receive a code on your mobile</div>
+            </div>
+          </label>
+
+          <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border); border-radius:var(--radius-md); cursor:pointer;">
+            <input type="radio" name="login-mfa-method" value="AUTHENTICATOR">
+            <div style="font-size:1.5rem;">🔒</div>
+            <div>
+              <div class="text-bold">Authenticator App</div>
+              <div style="font-size:0.8125rem; color:var(--color-text-muted);">Use code from authenticator app</div>
+            </div>
+          </label>
+        </div>
+
+        <button type="submit" data-testid="login-mfa-choice-continue-btn" class="btn btn--primary">Continue</button>
+      </form>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 4, 5, 6: Email OTP Verification (Valid, Error, Expired)
+         ==================================================================== -->
+    <section data-testid="login-otp-screen" class="screen" aria-labelledby="title-login-otp">
+      <div class="screen-header">
+        <div class="icon-badge icon-badge--blue">✉️</div>
+        <h1 id="title-login-otp" class="screen-header__title">Email Verification</h1>
+        <p class="screen-header__subtitle">Enter the 6-digit code sent to <strong data-testid="login-otp-target">priya.sharma@email.com</strong></p>
+      </div>
+
+      <!-- Alert / Error message (State 5 Wrong OTP) -->
+      <div data-testid="login-otp-error" class="alert-banner alert-banner--error hidden" role="alert">
+        Incorrect code. Please try again.
+        <br>You have 2 attempts left.
+      </div>
+
+      <!-- Alert / Expired message (State 6 Expired) -->
+      <div data-testid="login-otp-expired" class="alert-banner alert-banner--error hidden" role="alert" style="background:transparent; color:var(--color-error); font-weight:600; border:none;">
+        Code expired.
+      </div>
+
+      <!-- 6-Box OTP Input -->
+      <div data-testid="login-otp-group" class="otp-input" role="group" aria-label="6-digit OTP code">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
+      </div>
+
+      <div class="text-center">
+        <p class="mb-4 hidden" data-testid="login-otp-expired-timer-text" style="color:var(--color-primary); font-weight:600;">You can request a new code in 00:28</p>
+        <p class="mb-4" data-testid="login-otp-timer-text">Code expires in <strong data-testid="login-expiry-timer">02:45</strong></p>
+        
+        <button type="button" data-testid="login-resend-btn" class="btn btn--primary hidden mt-4">Resend code</button>
+        <p class="auth-footer mt-4">Didn't receive the code? <button type="button" class="btn--link" data-testid="login-resend-link">Resend code (00:25)</button></p>
+      </div>
+    </section>
+
+    </div>
+  </main>
+
+  <!-- Mobile Keypad (Bottom pinned on mobile) -->
+  <div class="mobile-keypad" data-testid="login-mobile-keypad">
+    <button type="button" class="mobile-keypad__btn" data-key="1">1</button>
+    <button type="button" class="mobile-keypad__btn" data-key="2">2</button>
+    <button type="button" class="mobile-keypad__btn" data-key="3">3</button>
+    <button type="button" class="mobile-keypad__btn" data-key="4">4</button>
+    <button type="button" class="mobile-keypad__btn" data-key="5">5</button>
+    <button type="button" class="mobile-keypad__btn" data-key="6">6</button>
+    <button type="button" class="mobile-keypad__btn" data-key="7">7</button>
+    <button type="button" class="mobile-keypad__btn" data-key="8">8</button>
+    <button type="button" class="mobile-keypad__btn" data-key="9">9</button>
+    <button type="button" class="mobile-keypad__btn" data-key="blank" disabled></button>
+    <button type="button" class="mobile-keypad__btn" data-key="0">0</button>
+    <button type="button" class="mobile-keypad__btn mobile-keypad__btn--icon" aria-label="Backspace" data-key="backspace">⌫</button>
+  </div>
+
+  <footer style="margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-muted);">
+    © 2026 SecureID. All rights reserved.
+  </footer>
+
+  <script type="module" src="/js/login.js"></script>
+</body>
+</html>

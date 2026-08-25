@@ -1,0 +1,57 @@
+/* ==========================================================================
+   SecureID - CSS Entrypoint
+   Critical Load Order: Tokens MUST load first so custom properties resolve
+   ========================================================================== */
+
+/* 1. Design Tokens (The foundation) */
+@import url('./tokens.css');
+
+/* 2. Shared Components */
+@import url('./components/auth-card.css');
+@import url('./components/auth-header.css');
+@import url('./components/auth-stepper.css');
+@import url('./components/icon-badge.css');
+@import url('./components/form-field.css');
+@import url('./components/password-rules.css');
+@import url('./components/otp-input.css');
+@import url('./components/mobile-keypad.css');
+@import url('./components/buttons.css');
+
+/* 3. Base / Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 1rem;
+}
+
+/* 4. Screen visibility management */
+.screen {
+  display: none;
+}
+
+.screen[data-active="true"] {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 5. Utility classes */
+.text-bold { font-weight: 600; }
+.hidden { display: none !important; }

@@ -1,0 +1,79 @@
+/* ==========================================================================
+   Component: AuthCard
+   Description: The main container for the authentication screens.
+   ========================================================================== */
+.auth-card {
+  width: 100%;
+  max-width: 480px; /* Default for mobile/tablet */
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-card);
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+  }
+}
+
+/* Desktop Exact Structural Layouts */
+@media (min-width: 1024px) {
+  .auth-card--registration {
+    max-width: var(--desktop-card-width-reg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .auth-card__grid {
+    display: grid;
+    grid-template-columns: 55% 40%;
+    gap: 5%;
+    align-items: start;
+    width: 100%;
+  }
+
+  .auth-card__top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    width: 100%;
+  }
+
+  .auth-card__center-column {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .auth-card--login {
+    max-width: var(--desktop-card-width-login);
+    display: flex;
+    padding: 0; /* padding is handled by panels */
+    overflow: hidden;
+  }
+
+  .auth-card__brand-panel {
+    width: var(--desktop-login-brand-ratio);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #0a2791 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 3rem;
+    text-align: center;
+  }
+
+  .auth-card__form-panel {
+    width: var(--desktop-login-form-ratio);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

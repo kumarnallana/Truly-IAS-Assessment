@@ -1,0 +1,46 @@
+/* ==========================================================================
+   Component: OtpInput
+   Description: 6-box inputs for OTP codes. Desktop uses standard layout.
+   ========================================================================== */
+.otp-input {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.otp-input__box {
+  width: 48px;
+  height: 56px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: var(--color-bg-card);
+  color: var(--color-text-main);
+  transition: all 0.2s ease;
+}
+
+.otp-input__box:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+}
+
+.otp-input__box--error {
+  border-color: var(--color-error) !important;
+  color: var(--color-error);
+}
+
+/* Alert Banner (Error) */
+.alert-banner {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.alert-banner--error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}

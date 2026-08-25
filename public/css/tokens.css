@@ -1,0 +1,125 @@
+/* ==========================================================================
+   SecureID - Design System Tokens
+   ========================================================================== */
+:root {
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: "Create Account" button background
+   * Value extracted via direct pixel sampling
+   */
+  --color-primary: #0F3AD2;
+
+  /* 
+   * Provenance: Derived from --color-primary for hover states.
+   */
+  --color-primary-hover: #0c2fa8;
+
+  /* 
+   * Provenance: media_1787629740612.png (Mobile Registration Flow)
+   * Region: State 2a, "Incorrect code" text
+   */
+  --color-error: #E42929;
+
+  /* 
+   * Provenance: media_1787629740612.png (Mobile Registration Flow)
+   * Region: State 2a, error banner background
+   */
+  --color-error-bg: #FCEAEA;
+
+  /* 
+   * Provenance: media_1787629740612.png (Mobile Registration Flow)
+   * Region: State 7, registration success checkmark badge background
+   */
+  --color-success: #21A649;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: "Create your account" title text
+   */
+  --color-text-main: #1A1C21;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: "Let's get you started" subtitle text
+   */
+  --color-text-muted: #61646B;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: default form input border
+   */
+  --color-border: #D5D7DF;
+  
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: focused form input border (same as primary)
+   */
+  --color-border-focus: #0F3AD2;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: page background behind the card
+   */
+  --color-bg-page: #F7F8FA;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: main registration card background
+   */
+  --color-bg-card: #FFFFFF;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: Checkbox border-radius 
+   */
+  --radius-sm: 4px;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: Form input border-radius
+   */
+  --radius-md: 8px;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: Primary button border-radius
+   */
+  --radius-lg: 12px;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: Main registration card border-radius
+   */
+  --radius-xl: 24px;
+
+  /* 
+   * Provenance: media_1787629740571.png (Web Registration Flow)
+   * Region: Main registration card drop shadow
+   */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
+
+  /* 
+   * Provenance: media_1787647166587.png (Registration Flow Desktop)
+   * Region: Main card width
+   * Extraction: Derived optimal 2-column width for 1440px viewport
+   */
+  --desktop-card-width-reg: 960px;
+
+  /* 
+   * Provenance: media_1787647174192.png (Login Flow Desktop)
+   * Region: Main card width
+   * Extraction: Derived optimal split-pane width for 1440px viewport
+   */
+  --desktop-card-width-login: 880px;
+
+  /* 
+   * Provenance: media_1787647174192.png (Login Flow Desktop)
+   * Region: Split pane branding ratio
+   * Extraction: Visual bounds derived to 40%
+   */
+  --desktop-login-brand-ratio: 40%;
+  --desktop-login-form-ratio: 60%;
+}

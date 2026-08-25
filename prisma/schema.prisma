@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserStatus {
@@ -16,6 +15,7 @@ enum UserStatus {
 enum OtpChannel {
   EMAIL
   SMS
+  AUTHENTICATOR
 }
 
 enum OtpPurpose {

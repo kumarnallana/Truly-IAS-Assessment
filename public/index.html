@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureID — Part 1 Registration Journey</title>
+  <meta name="description" content="SecureID Authentication & Registration Assessment - Part 1 Registration Journey">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <main class="auth-card auth-card--registration">
+
+    <!-- Desktop Header Row (Inside Card) -->
+    <div class="auth-card__top-bar">
+      <!-- Brand Header -->
+      <header class="auth-header">
+        <div class="auth-header__icon">🛡️</div>
+        <span>SecureID</span>
+      </header>
+
+      <!-- Progress Stepper -->
+      <nav class="auth-stepper" aria-label="Registration Progress">
+        <div data-testid="step-dot-1" class="auth-stepper__dot auth-stepper__dot--active">1</div>
+        <div data-testid="step-line-1" class="auth-stepper__line"></div>
+        <div data-testid="step-dot-2" class="auth-stepper__dot">2</div>
+        <div data-testid="step-line-2" class="auth-stepper__line"></div>
+        <div data-testid="step-dot-3" class="auth-stepper__dot">3</div>
+        <div data-testid="step-line-3" class="auth-stepper__line"></div>
+        <div data-testid="step-dot-4" class="auth-stepper__dot">4</div>
+        <div data-testid="step-line-4" class="auth-stepper__line"></div>
+        <div data-testid="step-dot-5" class="auth-stepper__dot">5</div>
+      </nav>
+    </div>
+
+    <!-- ====================================================================
+         SCREEN 1: Registration Details Form
+         ==================================================================== -->
+    <section data-testid="registration-screen" class="screen" data-active="true" aria-labelledby="title-details">
+      <div class="auth-card__grid">
+        <!-- Left Column: Form -->
+        <div class="auth-card__form-column">
+          <div class="screen-header">
+            <h1 id="title-details" class="screen-header__title">Create your account</h1>
+            <p class="screen-header__subtitle">Let's get you started</p>
+          </div>
+
+          <div data-testid="error-form" class="alert-banner alert-banner--error hidden" role="alert"></div>
+
+          <form data-testid="registration-form" novalidate>
+            <!-- Password -->
+            <div class="form-field">
+              <label for="reg-password" class="form-field__label">Password</label>
+              <div class="form-field__password-wrapper">
+                <input
+                  type="password"
+                  id="reg-password"
+                  data-testid="reg-password"
+                  class="form-field__input"
+                  placeholder="••••••••••••"
+                  autocomplete="new-password"
+                  required
+                >
+                <button type="button" data-testid="toggle-password-btn" class="form-field__password-toggle" aria-label="Toggle password visibility">
+                  👁
+                </button>
+              </div>
+              <span data-testid="error-password" class="form-field__error-text hidden"></span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-field">
+              <label for="reg-confirm-password" class="form-field__label">Confirm Password</label>
+              <input
+                type="password"
+                id="reg-confirm-password"
+                data-testid="reg-confirm-password"
+                class="form-field__input"
+                placeholder="••••••••••••"
+                autocomplete="new-password"
+                required
+              >
+              <span data-testid="error-confirmPassword" class="form-field__error-text hidden"></span>
+            </div>
+
+            <!-- Terms Checkbox -->
+            <label class="form-field__checkbox-label">
+              <input type="checkbox" data-testid="reg-terms" required>
+              <span>
+                I agree to the <a href="#" data-testid="terms-link">Terms & Conditions</a> and <a href="#" data-testid="privacy-link">Privacy Policy</a>
+              </span>
+            </label>
+            <span data-testid="error-agreeTerms" class="form-field__error-text hidden mb-6" style="margin-top:-1rem;"></span>
+
+            <!-- Submit Button -->
+            <button type="submit" data-testid="reg-submit-btn" class="btn btn--primary" style="width: 100%;">Create Account</button>
+            
+            <div class="auth-footer mt-4 text-center">
+              Already have an account? <a href="/login.html" data-testid="login-link">Login</a>
+            </div>
+          </form>
+        </div> <!-- End Form Column -->
+
+        <!-- Right Column: Password Requirements -->
+        <div class="auth-card__rules-column">
+          <!-- Password Checklist -->
+          <div data-testid="password-rules" class="password-rules" aria-live="polite">
+            <div class="password-rules__title">Password must contain:</div>
+            <ul class="password-rules__list">
+              <li data-testid="rule-length" class="password-rules__item">
+                <span class="password-rules__icon">✓</span> At least 8 characters
+              </li>
+              <li data-testid="rule-uppercase" class="password-rules__item">
+                <span class="password-rules__icon">✓</span> 1 uppercase letter
+              </li>
+              <li data-testid="rule-number" class="password-rules__item">
+                <span class="password-rules__icon">✓</span> 1 number
+              </li>
+              <li data-testid="rule-special" class="password-rules__item">
+                <span class="password-rules__icon">✓</span> 1 special character
+              </li>
+            </ul>
+          </div>
+        </div> <!-- End Rules Column -->
+
+      </div> <!-- End Grid -->
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 2, 2a, 2b: Email Verification (OTP)
+         (State 2b Expired is derived for desktop)
+         ==================================================================== -->
+    <section data-testid="email-otp-screen" class="screen" aria-labelledby="title-email-otp" data-derived="true">
+      <div class="auth-card__center-column">
+        <div class="screen-header">
+          <div class="icon-badge icon-badge--blue">✉️</div>
+          <h1 id="title-email-otp" class="screen-header__title">Verify your email</h1>
+          <p class="screen-header__subtitle">We have sent a 6-digit code to <strong data-testid="email-otp-target">email@example.com</strong></p>
+        </div>
+
+        <!-- Alert / Error message (State 2a, 2b) -->
+        <div data-testid="email-otp-error" class="alert-banner alert-banner--error hidden" role="alert"></div>
+
+        <!-- 6-Box OTP Input -->
+        <div data-testid="email-otp-group" class="otp-input" role="group" aria-label="6-digit email OTP">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
+        </div>
+
+        <div class="text-center">
+          <p class="mb-4">Code expires in <strong data-testid="email-expiry-timer">05:00</strong></p>
+          <button type="button" data-testid="email-verify-btn" class="btn btn--primary mt-4">Verify Email</button>
+          <button type="button" data-testid="email-resend-btn" class="btn btn--secondary mt-4 hidden">Resend Code</button>
+          <p class="auth-footer mt-4">Didn't receive the code? <button type="button" class="btn--link" data-testid="email-resend-link">Resend</button></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 3, 3a, 3b: Mobile Verification (OTP)
+         (States 3a Wrong Code, 3b Max Attempts are derived for desktop)
+         ==================================================================== -->
+    <section data-testid="sms-otp-screen" class="screen" aria-labelledby="title-sms-otp" data-derived="true">
+      <div class="auth-card__center-column">
+        <div class="screen-header">
+          <div class="icon-badge icon-badge--green">📞</div>
+          <h1 id="title-sms-otp" class="screen-header__title">Verify your mobile</h1>
+          <p class="screen-header__subtitle">We have sent a 6-digit code to <strong data-testid="sms-otp-target">+91 98765 43210</strong></p>
+        </div>
+
+        <!-- Alert / Error message (State 3a, 3b) -->
+        <div data-testid="sms-otp-error" class="alert-banner alert-banner--error hidden" role="alert"></div>
+
+        <!-- 6-Box OTP Input -->
+        <div data-testid="sms-otp-group" class="otp-input" role="group" aria-label="6-digit mobile OTP">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
+        </div>
+
+        <div class="text-center">
+          <p class="mb-4">Code expires in <strong data-testid="sms-expiry-timer">05:00</strong></p>
+          <button type="button" data-testid="sms-verify-btn" class="btn btn--primary mt-4">Verify Mobile</button>
+          <button type="button" data-testid="sms-resend-btn" class="btn btn--secondary mt-4 hidden">Resend New Code</button>
+          <p class="auth-footer mt-4">Wrong number? <button type="button" class="btn--link" data-testid="sms-change-link">Change</button></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 4: Set Up MFA (Derived for desktop)
+         ==================================================================== -->
+    <section data-testid="mfa-choice-screen" class="screen" aria-labelledby="title-mfa-choice" data-derived="true">
+      <div class="auth-card__center-column">
+        <div class="screen-header">
+          <div class="icon-badge icon-badge--blue">🛡️</div>
+          <h1 id="title-mfa-choice" class="screen-header__title">Set up Multi-Factor Auth</h1>
+          <p class="screen-header__subtitle">Add an extra layer of security to protect your account.</p>
+        </div>
+
+        <form data-testid="mfa-choice-form">
+          <!-- These would ideally be proper custom radio cards in components, keeping it simple here for MVP -->
+          <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom: 2rem;">
+            
+            <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border-focus); border-radius:var(--radius-md); cursor:pointer;">
+              <input type="radio" name="mfa-method" value="AUTHENTICATOR" checked>
+              <div style="font-size:1.5rem;">📲</div>
+              <div>
+                <div class="text-bold">Authenticator App</div>
+                <div style="font-size:0.8125rem; color:var(--color-text-muted);">Google Authenticator / Authy</div>
+              </div>
+            </label>
+
+            <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border); border-radius:var(--radius-md); cursor:pointer;">
+              <input type="radio" name="mfa-method" value="SMS">
+              <div style="font-size:1.5rem;">💬</div>
+              <div>
+                <div class="text-bold">SMS Authentication</div>
+                <div style="font-size:0.8125rem; color:var(--color-text-muted);">Receive codes on your mobile</div>
+              </div>
+            </label>
+
+            <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border); border-radius:var(--radius-md); cursor:pointer;">
+              <input type="radio" name="mfa-method" value="EMAIL">
+              <div style="font-size:1.5rem;">✉️</div>
+              <div>
+                <div class="text-bold">Email Authentication</div>
+                <div style="font-size:0.8125rem; color:var(--color-text-muted);">Receive codes on your email</div>
+              </div>
+            </label>
+          </div>
+
+          <button type="submit" data-testid="mfa-choice-continue-btn" class="btn btn--primary" style="width: 100%;">Continue</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 5: Authenticator Setup (QR Code)
+         ==================================================================== -->
+    <section data-testid="authenticator-setup-screen" class="screen" aria-labelledby="title-auth-setup">
+      <div class="auth-card__center-column">
+        <div class="screen-header">
+          <h1 id="title-auth-setup" class="screen-header__title">Scan QR Code</h1>
+          <p class="screen-header__subtitle">Open your authenticator app and scan this QR code</p>
+        </div>
+
+        <div class="text-center mb-6">
+          <img data-testid="qr-image-el" src="" alt="Authenticator QR Code" style="width: 200px; height: 200px; border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 1rem;">
+          <div>
+            <button type="button" data-testid="toggle-manual-key-btn" class="btn--link">Can't scan? Enter setup key</button>
+          </div>
+          <div data-testid="manual-key-container" class="hidden mt-4">
+            <div data-testid="manual-secret-key" style="background:var(--color-bg-page); padding:1rem; border-radius:var(--radius-md); font-family:monospace; word-break:break-all;"></div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" data-testid="auth-setup-back-btn" class="btn btn--secondary" style="flex: 1;">Back</button>
+          <button type="button" data-testid="auth-setup-continue-btn" class="btn btn--primary" style="flex: 2;">Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 6, 6a: MFA Verification (Derived for desktop)
+         ==================================================================== -->
+    <section data-testid="mfa-verify-screen" class="screen" aria-labelledby="title-mfa-verify" data-derived="true">
+      <div class="auth-card__center-column">
+        <div class="screen-header">
+          <div class="icon-badge icon-badge--blue">🔒</div>
+          <h1 id="title-mfa-verify" class="screen-header__title">Enter the 6-digit code</h1>
+          <p data-testid="mfa-verify-subtitle" class="screen-header__subtitle">Enter the code from your authenticator app</p>
+        </div>
+
+        <!-- Alert / Error message (State 6a) -->
+        <div data-testid="mfa-error-banner" class="alert-banner alert-banner--error hidden" role="alert"></div>
+
+        <!-- 6-Box OTP Input -->
+        <div data-testid="mfa-otp-group" class="otp-input" role="group" aria-label="6-digit MFA verification code">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
+          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
+        </div>
+
+        <div class="text-center">
+          <button type="button" data-testid="mfa-verify-submit-btn" class="btn btn--primary mb-4" style="width: 100%;">Verify & Complete</button>
+          <p class="auth-footer"><button type="button" class="btn--link" data-testid="mfa-choose-another-btn">Choose another method</button></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 7: Registration Success
+         ==================================================================== -->
+    <section data-testid="success-screen" class="screen" aria-labelledby="title-success">
+      <div class="auth-card__center-column">
+        <div class="screen-header">
+          <div class="icon-badge icon-badge--green">✓</div>
+          <h1 id="title-success" class="screen-header__title">Account created!</h1>
+          <p class="screen-header__subtitle">Your account has been created successfully and MFA is enabled.</p>
+        </div>
+
+        <ul style="list-style:none; margin-bottom:2rem; padding:0; display:flex; flex-direction:column; gap:1rem; align-items:center;">
+          <li style="display:flex; align-items:center; gap:0.75rem; font-weight:500;">
+            <span style="color:var(--color-success);">✓</span> Email verified
+          </li>
+          <li style="display:flex; align-items:center; gap:0.75rem; font-weight:500;">
+            <span style="color:var(--color-success);">✓</span> Mobile verified
+          </li>
+          <li style="display:flex; align-items:center; gap:0.75rem; font-weight:500;">
+            <span style="color:var(--color-success);">✓</span> MFA enabled
+          </li>
+        </ul>
+
+        <button type="button" data-testid="continue-to-login-btn" class="btn btn--primary" style="width: 100%;">Continue to Login</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Mobile Keypad (Bottom pinned on mobile) -->
+  <div class="mobile-keypad" data-testid="mobile-keypad">
+    <button type="button" class="mobile-keypad__btn" data-key="1">1</button>
+    <button type="button" class="mobile-keypad__btn" data-key="2">2</button>
+    <button type="button" class="mobile-keypad__btn" data-key="3">3</button>
+    <button type="button" class="mobile-keypad__btn" data-key="4">4</button>
+    <button type="button" class="mobile-keypad__btn" data-key="5">5</button>
+    <button type="button" class="mobile-keypad__btn" data-key="6">6</button>
+    <button type="button" class="mobile-keypad__btn" data-key="7">7</button>
+    <button type="button" class="mobile-keypad__btn" data-key="8">8</button>
+    <button type="button" class="mobile-keypad__btn" data-key="9">9</button>
+    <button type="button" class="mobile-keypad__btn" data-key="blank" disabled aria-hidden="true"></button>
+    <button type="button" class="mobile-keypad__btn" data-key="0">0</button>
+    <button type="button" class="mobile-keypad__btn mobile-keypad__btn--icon" aria-label="Backspace" data-key="backspace">⌫</button>
+  </div>
+
+  <footer style="margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-muted);">
+    © 2026 SecureID. All rights reserved.
+  </footer>
+
+  <script type="module" src="/js/registration.js"></script>
+</body>
+</html>

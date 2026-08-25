@@ -1,0 +1,29 @@
+/* ==========================================================================
+   Component: IconBadge
+   Description: Colored circular icons used for email, sms, success, error.
+   ========================================================================== */
+.icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+  font-size: 1.5rem;
+}
+
+.icon-badge--blue {
+  background: rgba(15, 58, 210, 0.1);
+  color: var(--color-primary);
+}
+
+.icon-badge--green {
+  background: rgba(33, 166, 73, 0.1);
+  color: var(--color-success);
+}
+
+.icon-badge--error {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}

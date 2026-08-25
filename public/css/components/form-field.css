@@ -1,0 +1,106 @@
+/* ==========================================================================
+   Component: FormField
+   Description: Standard inputs, labels, errors, and input groups
+   ========================================================================== */
+.form-field {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.form-field__label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-main);
+  margin-bottom: 0.5rem;
+}
+
+.form-field__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-card);
+  transition: all 0.2s ease;
+}
+
+.form-field__input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+}
+
+.form-field__input--error {
+  border-color: var(--color-error) !important;
+}
+
+.form-field__error-text {
+  display: block;
+  color: var(--color-error);
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
+
+/* Phone Input Group (with +91 prefix) */
+.form-field__group {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-card);
+  transition: all 0.2s ease;
+}
+
+.form-field__group:focus-within {
+  border-color: var(--color-border-focus);
+}
+
+.form-field__prefix {
+  padding: 0.75rem 1rem;
+  color: var(--color-text-main);
+  border-right: 1px solid var(--color-border);
+  font-size: 0.9375rem;
+}
+
+.form-field__group .form-field__input {
+  border: none;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* Password Input Wrapper (for the eye toggle) */
+.form-field__password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-field__password-toggle {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+/* Checkbox Label */
+.form-field__checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+
+.form-field__checkbox-label input[type="checkbox"] {
+  margin-top: 0.25rem;
+}
+
+.form-field__checkbox-label a {
+  color: var(--color-primary);
+  text-decoration: none;
+}

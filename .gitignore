@@ -7,3 +7,9 @@ node_modules/
 dist/
 build/
 .DS_Store
+
+# Python virtual environments (not needed for this Node.js project)
+myenv/
+venv/
+.venv/
+__pycache__/

@@ -1,0 +1,22 @@
+{
+  "login": {
+    "card": {
+      "x": 280,
+      "y": 160.5,
+      "width": 880,
+      "height": 527.5
+    },
+    "brandPanel": {
+      "x": 280,
+      "y": 160.5,
+      "width": 352,
+      "height": 527.5
+    },
+    "formPanel": {
+      "x": 632,
+      "y": 160.5,
+      "width": 528,
+      "height": 527.5
+    }
+  }
+}
