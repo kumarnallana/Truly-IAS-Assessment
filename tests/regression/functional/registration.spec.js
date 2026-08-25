@@ -19,7 +19,6 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
       await route.fulfill({ body: JSON.stringify({ qrCodeDataUrl: 'data:image/png;base64,...', base32Secret: 'SECRET123', challengeId: 'mfa-challenge' }), contentType: 'application/json' });
     });
     await page.route('**/api/verify-mfa-setup', async route => {
-    await page.route('**/api/verify-mfa-setup', async route => {
       await route.fulfill({ body: JSON.stringify({ registrationComplete: true }), contentType: 'application/json' });
     });
 
