@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const path = require('path');
 
 async function captureLoginStates() {
   const browser = await puppeteer.launch({ headless: 'new' });
@@ -7,7 +8,8 @@ async function captureLoginStates() {
   await page.setViewport({ width: 1440, height: 900 });
 
   console.log('Navigating to login page...');
-  await page.goto('http://localhost:4000/login.html');
+  const filePath = `file://${path.resolve(__dirname, 'public/login.html')}`;
+  await page.goto(filePath);
   await new Promise(r => setTimeout(r, 500));
 
   // Helper to hide all screens and show one
