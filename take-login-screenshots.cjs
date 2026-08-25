@@ -8,8 +8,7 @@ async function captureLoginStates() {
   await page.setViewport({ width: 1440, height: 900 });
 
   console.log('Navigating to login page...');
-  const filePath = `file://${path.resolve(__dirname, 'public/login.html')}`;
-  await page.goto(filePath);
+  await page.goto('http://localhost:4000/login.html');
   await new Promise(r => setTimeout(r, 500));
 
   // Helper to hide all screens and show one

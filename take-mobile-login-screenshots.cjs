@@ -12,9 +12,9 @@ async function takeMobileLoginScreenshots() {
   });
   const page = await context.newPage();
 
-  const filePath = `file://${path.resolve(__dirname, 'public/login.html')}`;
-  console.log(`Loading: ${filePath}`);
-  await page.goto(filePath);
+  console.log('Navigating to login page...');
+  await page.goto('http://localhost:4000/login.html');
+  await new Promise(r => setTimeout(r, 500));
 
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

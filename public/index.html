@@ -45,9 +45,57 @@
             <p class="screen-header__subtitle">Let's get you started</p>
           </div>
 
-          <div data-testid="error-form" class="alert-banner alert-banner--error hidden" role="alert"></div>
+          <div data-testid="error-form" class="alert-banner alert-banner--error" style="display: none;" role="alert"></div>
 
           <form data-testid="registration-form" novalidate>
+            <!-- Full Name -->
+            <div class="form-field">
+              <label for="reg-fullname" class="form-field__label">Full Name</label>
+              <input
+                type="text"
+                id="reg-fullname"
+                data-testid="reg-fullname"
+                class="form-field__input"
+                placeholder="Priya Sharma"
+                required
+              >
+              <span data-testid="error-fullname" class="form-field__error-text" style="display: none;"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-field">
+              <label for="reg-email" class="form-field__label">Email</label>
+              <input
+                type="email"
+                id="reg-email"
+                data-testid="reg-email"
+                class="form-field__input"
+                placeholder="priya.sharma@email.com"
+                required
+              >
+              <span data-testid="error-email" class="form-field__error-text" style="display: none;"></span>
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="form-field">
+              <label for="reg-mobile" class="form-field__label">Mobile Number</label>
+              <div class="form-field__group">
+                <select class="form-field__prefix-select" aria-label="Country Code">
+                  <option value="+91">+91</option>
+                  <option value="+1">+1</option>
+                </select>
+                <input
+                  type="tel"
+                  id="reg-mobile"
+                  data-testid="reg-mobile"
+                  class="form-field__input"
+                  placeholder="98765 43210"
+                  required
+                >
+              </div>
+              <span data-testid="error-mobile" class="form-field__error-text" style="display: none;"></span>
+            </div>
+
             <!-- Password -->
             <div class="form-field">
               <label for="reg-password" class="form-field__label">Password</label>
@@ -65,22 +113,7 @@
                   👁
                 </button>
               </div>
-              <span data-testid="error-password" class="form-field__error-text hidden"></span>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="form-field">
-              <label for="reg-confirm-password" class="form-field__label">Confirm Password</label>
-              <input
-                type="password"
-                id="reg-confirm-password"
-                data-testid="reg-confirm-password"
-                class="form-field__input"
-                placeholder="••••••••••••"
-                autocomplete="new-password"
-                required
-              >
-              <span data-testid="error-confirmPassword" class="form-field__error-text hidden"></span>
+              <span data-testid="error-password" class="form-field__error-text" style="display: none;"></span>
             </div>
 
             <!-- Terms Checkbox -->
@@ -90,7 +123,7 @@
                 I agree to the <a href="#" data-testid="terms-link">Terms & Conditions</a> and <a href="#" data-testid="privacy-link">Privacy Policy</a>
               </span>
             </label>
-            <span data-testid="error-agreeTerms" class="form-field__error-text hidden mb-6" style="margin-top:-1rem;"></span>
+            <span data-testid="error-agreeTerms" class="form-field__error-text mb-6" style="display: none; margin-top:-1rem;"></span>
 
             <!-- Submit Button -->
             <button type="submit" data-testid="reg-submit-btn" class="btn btn--primary" style="width: 100%;">Create Account</button>
@@ -107,16 +140,16 @@
           <div data-testid="password-rules" class="password-rules" aria-live="polite">
             <div class="password-rules__title">Password must contain:</div>
             <ul class="password-rules__list">
-              <li data-testid="rule-length" class="password-rules__item">
+              <li data-testid="rule-length" class="password-rules__item password-rules__item--valid">
                 <span class="password-rules__icon">✓</span> At least 8 characters
               </li>
-              <li data-testid="rule-uppercase" class="password-rules__item">
+              <li data-testid="rule-uppercase" class="password-rules__item password-rules__item--valid">
                 <span class="password-rules__icon">✓</span> 1 uppercase letter
               </li>
-              <li data-testid="rule-number" class="password-rules__item">
+              <li data-testid="rule-number" class="password-rules__item password-rules__item--valid">
                 <span class="password-rules__icon">✓</span> 1 number
               </li>
-              <li data-testid="rule-special" class="password-rules__item">
+              <li data-testid="rule-special" class="password-rules__item password-rules__item--valid">
                 <span class="password-rules__icon">✓</span> 1 special character
               </li>
             </ul>

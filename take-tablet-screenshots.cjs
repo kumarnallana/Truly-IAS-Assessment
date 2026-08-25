@@ -14,8 +14,8 @@ async function takeTabletScreenshots() {
     { w: 1024, h: 1366, name: '1024px' }
   ];
 
-  const regPath = `file://${path.resolve(__dirname, 'public/index.html')}`;
-  const logPath = `file://${path.resolve(__dirname, 'public/login.html')}`;
+  const regPath = 'http://localhost:4000/index.html';
+  const logPath = 'http://localhost:4000/login.html';
 
   for (const vp of viewports) {
     const context = await browser.newContext({

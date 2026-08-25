@@ -67,9 +67,9 @@ function updateStepper(step) {
 // Screen Switcher
 window.showScreen = showScreen;
 export function showScreen(screenKey) {
-  Object.values(screens).forEach((s) => s?.classList.remove("active"));
+  Object.values(screens).forEach((s) => s?.removeAttribute("data-active"));
   if (screens[screenKey]) {
-    screens[screenKey].classList.add("active");
+    screens[screenKey].setAttribute("data-active", "true");
     state.currentScreen = screenKey;
   }
 
@@ -99,10 +99,10 @@ export function showScreen(screenKey) {
 // OTP Input Manager Utility
 // --------------------------------------------------------------------------
 function setupOtpInputs(containerId, onComplete) {
-  const container = document.getElementById(containerId);
+  const container = document.getElementById(containerId) || document.querySelector(`[data-testid="${containerId}"]`);
   if (!container) return { getOtp: () => "", clear: () => {}, setInvalid: () => {} };
 
-  const inputs = Array.from(container.querySelectorAll(".otp-box"));
+  const inputs = Array.from(container.querySelectorAll("input"));
 
   inputs.forEach((input, index) => {
     input.addEventListener("input", (e) => {
@@ -194,12 +194,11 @@ function startTimer(durationSeconds, displayElement, onExpire) {
   return intervalId;
 }
 
-// --------------------------------------------------------------------------
-// 1. Registration Details Screen
-// --------------------------------------------------------------------------
 const regForm = document.querySelector('[data-testid="registration-form"]');
+const fullnameInput = document.querySelector('[data-testid="reg-fullname"]');
+const emailInput = document.querySelector('[data-testid="reg-email"]');
+const mobileInput = document.querySelector('[data-testid="reg-mobile"]');
 const passwordInput = document.querySelector('[data-testid="reg-password"]');
-const confirmPasswordInput = document.querySelector('[data-testid="reg-confirm-password"]');
 const togglePasswordBtn = document.querySelector('[data-testid="toggle-password-btn"]');
 const regSubmitBtn = document.querySelector('[data-testid="reg-submit-btn"]');
 
@@ -234,7 +233,6 @@ if (togglePasswordBtn && passwordInput) {
   togglePasswordBtn.addEventListener("click", () => {
     const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
     passwordInput.setAttribute("type", type);
-    if (confirmPasswordInput) confirmPasswordInput.setAttribute("type", type);
     togglePasswordBtn.textContent = type === "password" ? "👁" : "🔒";
   });
 }
@@ -242,22 +240,19 @@ if (togglePasswordBtn && passwordInput) {
 // Client-side mirror validation
 function validateRegForm(data) {
   const errors = {};
-  if (!data.name.trim() || data.name.trim().length < 2) {
-    errors.name = "Full name must be at least 2 characters.";
+  if (!data.fullname.trim() || data.fullname.trim().length < 2) {
+    errors.fullname = "Full name must be at least 2 characters.";
   }
   if (!data.email.trim() || !/^\S+@\S+\.\S+$/.test(data.email)) {
     errors.email = "Please enter a valid email address.";
   }
-  if (!data.phone.trim() || data.phone.trim().length < 7) {
-    errors.phone = "Please enter a valid mobile number.";
+  if (!data.mobile.trim() || data.mobile.trim().length < 7) {
+    errors.mobile = "Please enter a valid mobile number.";
   }
   if (data.password.length < 8) {
     errors.password = "Password must be at least 8 characters.";
   } else if (!/[A-Z]/.test(data.password) || !/[0-9]/.test(data.password) || !/[^A-Za-z0-9]/.test(data.password)) {
     errors.password = "Password must satisfy all complexity requirements.";
-  }
-  if (data.password !== data.confirmPassword) {
-    errors.confirmPassword = "Passwords do not match.";
   }
   if (!data.agreeTerms) {
     errors.agreeTerms = "You must agree to the Terms & Conditions.";
@@ -266,7 +261,7 @@ function validateRegForm(data) {
 }
 
 function displayFieldErrors(errors) {
-  ["name", "email", "phone", "password", "confirmPassword", "agreeTerms", "form"].forEach((field) => {
+  ["fullname", "email", "mobile", "password", "agreeTerms", "form"].forEach((field) => {
     const errSpan = document.querySelector(`[data-testid="error-${field}"]`);
     const inputEl = document.querySelector(`[data-testid="reg-${field}"]`);
     if (errSpan) {
@@ -283,11 +278,10 @@ if (regForm) {
   regForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = {
-      name: document.querySelector('[data-testid="reg-name"]')?.value || "",
-      email: document.querySelector('[data-testid="reg-email"]')?.value || "",
-      phone: document.querySelector('[data-testid="reg-phone"]')?.value || "",
+      fullname: fullnameInput?.value || "",
+      email: emailInput?.value || "",
+      mobile: mobileInput?.value || "",
       password: passwordInput?.value || "",
-      confirmPassword: confirmPasswordInput?.value || "",
       agreeTerms: document.querySelector('[data-testid="reg-terms"]')?.checked || false,
     };
 
@@ -302,17 +296,16 @@ if (regForm) {
       const response = await apiRequest("/register", {
         method: "POST",
         body: {
-          name: formData.name,
+          name: formData.fullname,
           email: formData.email,
-          phone: formData.phone,
+          phone: formData.mobile,
           password: formData.password,
-          confirmPassword: formData.confirmPassword,
         },
       });
 
       state.userId = response.userId;
       state.email = formData.email;
-      state.phone = formData.phone;
+      state.phone = formData.mobile;
       state.emailChallengeId = response.challengeId;
 
       initEmailOtpScreen();

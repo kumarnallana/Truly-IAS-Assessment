@@ -22,7 +22,9 @@
   .auth-card__rules-column {
     margin-top: 2rem;
   }
-  
+}
+
+@media (max-width: 1023px) {
   .auth-card__brand-panel {
     display: none !important;
   }
@@ -42,6 +44,10 @@
     gap: 5%;
     align-items: start;
     width: 100%;
+  }
+
+  .auth-card__rules-column {
+    margin-top: 260px; /* Aligns visually with the Password field below the 3 new fields */
   }
 
   .auth-card__top-bar {
