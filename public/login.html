@@ -97,6 +97,7 @@
          SCREEN 3: Choose Method (MFA)
          ==================================================================== -->
     <section data-testid="login-mfa-choice-screen" class="screen" aria-labelledby="title-mfa-choice">
+      <button type="button" class="btn--back mobile-only" aria-label="Go back" onclick="showScreen('login-screen')">←</button>
       <div class="screen-header">
         <h1 id="title-mfa-choice" class="screen-header__title">Verify your identity</h1>
         <p class="screen-header__subtitle">Choose a method to continue</p>
@@ -140,6 +141,7 @@
          SCREEN 4, 5, 6: Email OTP Verification (Valid, Error, Expired)
          ==================================================================== -->
     <section data-testid="login-otp-screen" class="screen" aria-labelledby="title-login-otp">
+      <button type="button" class="btn--back mobile-only" aria-label="Go back" onclick="showScreen('login-mfa-choice-screen')">←</button>
       <div class="screen-header">
         <div class="icon-badge icon-badge--blue">✉️</div>
         <h1 id="title-login-otp" class="screen-header__title">Email Verification</h1>

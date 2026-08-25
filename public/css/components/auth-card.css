@@ -12,11 +12,19 @@
   margin: 0 auto;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .auth-card {
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     box-shadow: none;
+  }
+  
+  .auth-card__rules-column {
+    margin-top: 2rem;
+  }
+  
+  .auth-card__brand-panel {
+    display: none !important;
   }
 }
 

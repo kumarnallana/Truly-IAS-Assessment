@@ -20,9 +20,9 @@ This document maintains a permanent inventory of every authentication state and 
 | **Registration** | Step 3: Mobile OTP | Yes | Yes | REFERENCE_OBSERVED | REFERENCE_OBSERVED |
 | **Registration** | Step 3a: Mobile Wrong | No | Yes | DERIVED_DESKTOP | REFERENCE_OBSERVED |
 | **Registration** | Step 3b: Mobile Max | No | Yes | DERIVED_DESKTOP | REFERENCE_OBSERVED |
-| **Registration** | Step 4: MFA Setup | No | Yes | DERIVED_DESKTOP | REFERENCE_OBSERVED |
+| **Registration** | Step 4: MFA Setup | No | No | DERIVED_DESKTOP | DERIVED_RESPONSIVE (Mobile shared component behavior adapted to 320–430px) |
 | **Registration** | Step 5: Auth Setup QR | Yes | Yes | REFERENCE_OBSERVED | REFERENCE_OBSERVED |
-| **Registration** | Step 6: MFA Verify | No | Yes | DERIVED_DESKTOP | REFERENCE_OBSERVED |
+| **Registration** | Step 6: MFA Verify | No | No | DERIVED_DESKTOP | DERIVED_RESPONSIVE (Mobile shared component behavior adapted to 320–430px) |
 | **Registration** | Step 6a: MFA Wrong | No | Yes | DERIVED_DESKTOP | REFERENCE_OBSERVED |
 | **Registration** | Step 7: Success | Yes | Yes | REFERENCE_OBSERVED | REFERENCE_OBSERVED |
 | **Login** | Default | Yes | Yes | REFERENCE_OBSERVED | REFERENCE_OBSERVED |
