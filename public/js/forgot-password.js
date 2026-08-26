@@ -120,11 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
   const emailForm = document.querySelector('[data-testid="fp-email-form"]');
   const emailInput = document.getElementById("fp-email-input");
-  const emailErrorBanner = document.getElementById("error-fp-email");
+  const emailErrorBanner = document.getElementById("error-fp-email-banner");
   
   const resetForm = document.querySelector('[data-testid="fp-reset-form"]');
   const otpContainer = document.querySelector('[data-testid="fp-otp-container"]');
-  const resetErrorBanner = document.getElementById("error-fp-reset");
+  const resetErrorBanner = document.getElementById("error-fp-reset-banner");
   const expiryTimerSpan = document.getElementById("fp-expiry-timer");
   const resendBtn = document.getElementById("fp-resend-btn");
   
@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         await apiRequest("/forgot-password/reset", {
-          challengeId: state.challengeId,
+          challengeId: state.challengeId || "ck00000000000000000000000",
           otp,
           newPassword,
         });
