@@ -36,10 +36,15 @@
   justify-content: center;
 }
 
-/* Screen Headers (Inside the card) */
 .screen-header {
   text-align: center;
   margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .auth-card--registration .auth-card__form-column .screen-header {
+    text-align: left;
+  }
 }
 
 .screen-header__title {

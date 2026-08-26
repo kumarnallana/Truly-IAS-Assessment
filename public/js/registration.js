@@ -205,7 +205,7 @@ const regSubmitBtn = document.querySelector('[data-testid="reg-submit-btn"]');
 
 // Live Password Validation Checklist
 if (passwordInput) {
-  passwordInput.addEventListener("input", () => {
+  const evaluatePasswordRules = () => {
     const val = passwordInput.value;
     const rules = {
       length: val.length >= 8,
@@ -223,7 +223,11 @@ if (passwordInput) {
         }
       });
     });
-  });
+  };
+
+  passwordInput.addEventListener("input", evaluatePasswordRules);
+  // Evaluate immediately in case of browser autofill
+  evaluatePasswordRules();
 }
 
 // Password toggle visibility

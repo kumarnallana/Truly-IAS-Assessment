@@ -40,6 +40,12 @@
   color: var(--color-error);
   font-size: 0.8125rem;
   margin-top: 0.5rem;
+  animation: slideFadeIn 150ms ease forwards;
+}
+
+@keyframes slideFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Phone Input Group (with +91 prefix) */
@@ -84,11 +90,28 @@
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
-/* Password Input Wrapper (for the eye toggle) */
+/* Input Wrapper with Icons */
+.form-field__icon-wrapper,
 .form-field__password-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+}
+
+.form-field__leading-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Adjust input padding when leading icon is present */
+.form-field__icon-wrapper .form-field__input,
+.form-field__icon-wrapper.form-field__password-wrapper .form-field__input {
+  padding-left: 2.75rem;
 }
 
 .form-field__password-toggle {
@@ -99,6 +122,9 @@
   color: var(--color-text-muted);
   cursor: pointer;
   padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Checkbox Label */

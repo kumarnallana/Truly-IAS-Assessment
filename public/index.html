@@ -40,6 +40,7 @@
       <div class="auth-card__grid">
         <!-- Left Column: Form -->
         <div class="auth-card__form-column">
+          <button type="button" class="btn--back mobile-only" aria-label="Go back">←</button>
           <div class="screen-header">
             <h1 id="title-details" class="screen-header__title">Create your account</h1>
             <p class="screen-header__subtitle">Let's get you started</p>
@@ -153,6 +154,10 @@
             <div class="auth-footer mt-4 text-center">
               Already have an account? <a href="/login.html" data-testid="login-link">Login</a>
             </div>
+            
+            <footer class="auth-footer text-center" style="margin-top: 1.5rem; font-size: 0.8125rem; color: var(--color-text-muted);">
+              © 2026 SecureID. All rights reserved.
+            </footer>
           </form>
         </div> <!-- End Form Column -->
 
@@ -366,10 +371,6 @@
     </section>
 
   </main>
-
-  <footer style="margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-muted);">
-    © 2026 SecureID. All rights reserved.
-  </footer>
 
   <script type="module" src="/js/registration.js"></script>
 </body>

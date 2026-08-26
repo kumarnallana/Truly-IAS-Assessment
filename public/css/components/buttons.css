@@ -12,8 +12,13 @@
   border-radius: var(--radius-lg);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 150ms ease;
+  transform: scale(1);
   text-decoration: none;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .btn:disabled {

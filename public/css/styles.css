@@ -36,6 +36,14 @@ body {
   padding: 1.5rem 1rem;
 }
 
+@media (max-width: 767px) {
+  body {
+    background-color: var(--color-bg-card);
+    padding: 0;
+    justify-content: flex-start;
+  }
+}
+
 /* 4. Screen visibility management */
 .screen {
   display: none;
