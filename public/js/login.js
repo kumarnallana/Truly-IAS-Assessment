@@ -257,9 +257,13 @@ async function verifyCode() {
       showExpiredState();
     } else {
       const remaining = error.details?.attemptsRemaining;
-      otpErrorMessage.innerHTML = remaining === undefined
-        ? error.message
-        : `${error.message}<br>You have ${remaining} attempt${remaining === 1 ? "" : "s"} left.`;
+      otpErrorMessage.textContent = error.message;
+      if (remaining !== undefined) {
+        otpErrorMessage.append(
+          document.createElement("br"),
+          document.createTextNode(`You have ${remaining} attempt${remaining === 1 ? "" : "s"} left.`),
+        );
+      }
       otpError.classList.remove("hidden");
     }
   } finally {
@@ -373,4 +377,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     // A missing or expired session is the expected initial login state.
   }
 });
-

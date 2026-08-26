@@ -55,6 +55,7 @@ body {
 /* 5. Utility classes */
 .text-bold { font-weight: 600; }
 .hidden { display: none !important; }
+[hidden] { display: none !important; }
 
 .visually-hidden {
   position: absolute !important;

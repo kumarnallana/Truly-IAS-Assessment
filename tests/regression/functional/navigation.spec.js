@@ -11,7 +11,7 @@ test.describe('Functional Regression', () => {
     
     await setLoginState(page, 'login-mfa-choice-screen');
     
-    const backBtn = page.locator('.btn--back');
+    const backBtn = page.getByTestId('login-method-back-btn');
     await expect(backBtn).toBeVisible();
     
     await backBtn.click();
