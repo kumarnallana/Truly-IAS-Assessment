@@ -3,6 +3,7 @@ import { generateOtp, hashOtp, safeEqualHex } from "../lib/otp.js";
 import { generateTotpSetup, verifyTotp, encryptSecret, decryptSecret } from "../lib/totp.js";
 import { sendEmailOtp, sendSmsOtp } from "./delivery.service.js";
 import { env } from "../lib/env.js";
+import { protectTestOtp } from "../lib/test-otp.js";
 
 function fail(message, statusCode, details) {
   return Object.assign(new Error(message), { statusCode, details });
@@ -77,6 +78,7 @@ export async function selectMfaMethod({ userId, method }) {
       channel,
       purpose,
       otpHash: hashOtp(otp, env.OTP_SECRET),
+      testOtpEncrypted: protectTestOtp(otp),
       expiresAt: challengeExpiry(),
       maxAttempts: env.OTP_MAX_ATTEMPTS,
     },

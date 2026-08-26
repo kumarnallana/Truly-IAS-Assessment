@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma.js";
 import { generateOtp, hashOtp, safeEqualHex } from "../lib/otp.js";
 import { env } from "../lib/env.js";
+import { protectTestOtp } from "../lib/test-otp.js";
 import { sendEmailOtp, sendSmsOtp } from "./delivery.service.js";
 
 function challengeExpiry() {
@@ -19,6 +20,7 @@ async function createChallenge({ userId, channel, purpose, otp }) {
       channel,
       purpose,
       otpHash: hashOtp(otp, env.OTP_SECRET),
+      testOtpEncrypted: protectTestOtp(otp),
       expiresAt: challengeExpiry(),
       maxAttempts: env.OTP_MAX_ATTEMPTS,
     },

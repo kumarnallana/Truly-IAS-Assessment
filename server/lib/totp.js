@@ -31,7 +31,12 @@ export async function generateTotpSetup({ accountName, issuer = "SecureID" }) {
 }
 
 export function verifyTotp({ base32Secret, code }) {
+  return verifyTotpCounter({ base32Secret, code }) !== null;
+}
+
+export function verifyTotpCounter({ base32Secret, code, timestamp = Date.now() }) {
   const totp = new OTPAuth.TOTP({ algorithm: "SHA1", digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(base32Secret) });
-  const delta = totp.validate({ token: code, window: 1 }); // allows -1/0/+1 time-step drift
-  return delta !== null;
+  const delta = totp.validate({ token: code, window: 1, timestamp }); // allows -1/0/+1 time-step drift
+  if (delta === null) return null;
+  return Math.floor(timestamp / 1000 / 30) + delta;
 }

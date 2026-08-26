@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureID — Authenticated Dashboard</title>
+  <meta name="description" content="SecureID authenticated session and protected API demonstration">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <main class="auth-card auth-card--login">
+    <div class="auth-card__brand-panel" aria-hidden="true">
+      <div class="auth-header__icon" style="font-size: 3rem; margin-bottom: 1.5rem; color: #FFF;">🛡️</div>
+      <h2 style="margin-bottom: 1rem; font-size: 1.75rem;">SecureID</h2>
+      <p style="opacity: 0.9; font-size: 1rem; max-width: 250px; line-height: 1.5;">Server session + short-lived JWT demonstration</p>
+    </div>
+
+    <div class="auth-card__form-panel">
+      <header class="auth-header auth-header--mobile-only">
+        <div class="auth-header__icon">🛡️</div>
+        <span>SecureID</span>
+      </header>
+
+      <section class="screen" data-active="true" aria-labelledby="dashboard-title">
+        <div class="screen-header">
+          <div class="icon-badge icon-badge--green">✓</div>
+          <h1 id="dashboard-title" class="screen-header__title">You're authenticated</h1>
+          <p class="screen-header__subtitle">Your MFA-backed server session is active.</p>
+        </div>
+
+        <div class="dashboard-profile" data-testid="dashboard-profile" aria-live="polite">
+          <p><strong>Name:</strong> <span data-testid="dashboard-name">Loading…</span></p>
+          <p><strong>Email:</strong> <span data-testid="dashboard-email">Loading…</span></p>
+          <p><strong>MFA:</strong> <span data-testid="dashboard-mfa">Loading…</span></p>
+        </div>
+
+        <div class="dashboard-actions">
+          <button type="button" class="btn btn--primary" data-testid="issue-token-btn">Issue short-lived API token</button>
+          <button type="button" class="btn btn--secondary" data-testid="call-protected-btn" disabled>Call /api/protected</button>
+          <button type="button" class="btn--link" data-testid="logout-btn">Log out</button>
+        </div>
+
+        <div class="dashboard-result" data-testid="dashboard-result" role="status" aria-live="polite">No API token has been issued. Tokens are kept only in page memory.</div>
+      </section>
+    </div>
+  </main>
+
+  <footer style="margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-muted);">
+    © 2026 SecureID. All rights reserved.
+  </footer>
+  <script type="module" src="/js/dashboard.js"></script>
+</body>
+</html>

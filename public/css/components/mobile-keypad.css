@@ -7,7 +7,7 @@
 }
 
 @media (max-width: 767px) {
-  .mobile-keypad {
+  body:has(.screen[data-active="true"] .otp-input) > .mobile-keypad {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;

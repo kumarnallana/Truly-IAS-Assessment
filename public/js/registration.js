@@ -652,7 +652,7 @@ if (mfaVerifySubmitBtn) {
 const continueLoginBtn = document.querySelector('[data-testid="continue-to-login-btn"]');
 if (continueLoginBtn) {
   continueLoginBtn.addEventListener("click", () => {
-    alert("Part 1 Complete! Login & Session Management is Part 2.");
+    window.location.assign("/login.html");
   });
 }
 

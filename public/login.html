@@ -48,6 +48,7 @@
             class="form-field__input"
             placeholder="Email or Username"
             autocomplete="username"
+            aria-describedby="error-login"
             required
           >
         </div>
@@ -75,7 +76,7 @@
             <input type="checkbox" data-testid="login-remember">
             <span>Remember me</span>
           </label>
-          <a href="#" class="btn--link" data-testid="forgot-password-link">Forgot password?</a>
+          <button type="button" class="btn--link" data-testid="forgot-password-link">Forgot password?</button>
         </div>
 
         <!-- Submit Button -->
@@ -88,6 +89,8 @@
         </button>
       </form>
 
+      <p class="scope-notice hidden" data-testid="login-scope-notice" role="status" aria-live="polite"></p>
+
       <div class="auth-footer">
         New here? <a href="/index.html" data-testid="register-link">Create an account</a>
       </div>
@@ -97,7 +100,7 @@
          SCREEN 3: Choose Method (MFA)
          ==================================================================== -->
     <section data-testid="login-mfa-choice-screen" class="screen" aria-labelledby="title-mfa-choice">
-      <button type="button" class="btn--back mobile-only" aria-label="Go back" onclick="showScreen('login-screen')">←</button>
+      <button type="button" class="btn--back mobile-only" data-testid="login-method-back-btn" aria-label="Go back">←</button>
       <div class="screen-header">
         <h1 id="title-mfa-choice" class="screen-header__title">Verify your identity</h1>
         <p class="screen-header__subtitle">Choose a method to continue</p>
@@ -105,30 +108,30 @@
 
       <form data-testid="login-mfa-choice-form">
         <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom: 2rem;">
-          <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border-focus); border-radius:var(--radius-md); cursor:pointer;">
-            <input type="radio" name="login-mfa-method" value="EMAIL" checked>
+          <label class="mfa-option-card selected" data-method="EMAIL">
+            <input type="radio" name="login-mfa-method" value="EMAIL" data-testid="login-method-email" checked>
             <div style="font-size:1.5rem;">✉️</div>
             <div>
               <div class="text-bold">Email OTP</div>
-              <div style="font-size:0.8125rem; color:var(--color-text-muted);">Receive a code on your email</div>
+              <div class="mfa-option-card__description" data-testid="login-email-target">Receive a code on your email</div>
             </div>
           </label>
 
-          <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border); border-radius:var(--radius-md); cursor:pointer;">
-            <input type="radio" name="login-mfa-method" value="SMS">
+          <label class="mfa-option-card" data-method="SMS">
+            <input type="radio" name="login-mfa-method" value="SMS" data-testid="login-method-sms">
             <div style="font-size:1.5rem;">💬</div>
             <div>
               <div class="text-bold">SMS OTP</div>
-              <div style="font-size:0.8125rem; color:var(--color-text-muted);">Receive a code on your mobile</div>
+              <div class="mfa-option-card__description" data-testid="login-sms-target">Receive a code on your mobile</div>
             </div>
           </label>
 
-          <label style="display:flex; align-items:center; gap:1rem; padding:1rem; border:1px solid var(--color-border); border-radius:var(--radius-md); cursor:pointer;">
-            <input type="radio" name="login-mfa-method" value="AUTHENTICATOR">
+          <label class="mfa-option-card" data-method="AUTHENTICATOR">
+            <input type="radio" name="login-mfa-method" value="AUTHENTICATOR" data-testid="login-method-authenticator">
             <div style="font-size:1.5rem;">🔒</div>
             <div>
               <div class="text-bold">Authenticator App</div>
-              <div style="font-size:0.8125rem; color:var(--color-text-muted);">Use code from authenticator app</div>
+              <div class="mfa-option-card__description">Use code from authenticator app</div>
             </div>
           </label>
         </div>
@@ -141,17 +144,16 @@
          SCREEN 4, 5, 6: Email OTP Verification (Valid, Error, Expired)
          ==================================================================== -->
     <section data-testid="login-otp-screen" class="screen" aria-labelledby="title-login-otp">
-      <button type="button" class="btn--back mobile-only" aria-label="Go back" onclick="showScreen('login-mfa-choice-screen')">←</button>
+      <button type="button" class="btn--back mobile-only" data-testid="login-otp-back-btn" aria-label="Go back">←</button>
       <div class="screen-header">
-        <div class="icon-badge icon-badge--blue">✉️</div>
-        <h1 id="title-login-otp" class="screen-header__title">Email Verification</h1>
-        <p class="screen-header__subtitle">Enter the 6-digit code sent to <strong data-testid="login-otp-target">priya.sharma@email.com</strong></p>
+        <div class="icon-badge icon-badge--blue" data-testid="login-otp-icon">✉️</div>
+        <h1 id="title-login-otp" class="screen-header__title" data-testid="login-otp-title">Email Verification</h1>
+        <p class="screen-header__subtitle" data-testid="login-otp-instructions">Enter the 6-digit code sent to <strong data-testid="login-otp-target">your email</strong></p>
       </div>
 
       <!-- Alert / Error message (State 5 Wrong OTP) -->
       <div data-testid="login-otp-error" class="alert-banner alert-banner--error hidden" role="alert">
-        Incorrect code. Please try again.
-        <br>You have 2 attempts left.
+        <span data-testid="login-otp-error-message">Incorrect code. Please try again.<br>You have 2 attempts left.</span>
       </div>
 
       <!-- Alert / Expired message (State 6 Expired) -->
@@ -159,15 +161,18 @@
         Code expired.
       </div>
 
-      <!-- 6-Box OTP Input -->
-      <div data-testid="login-otp-group" class="otp-input" role="group" aria-label="6-digit OTP code">
-        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
-        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
-        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
-        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
-        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
-        <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
-      </div>
+      <form data-testid="login-otp-form" novalidate>
+        <!-- 6-Box OTP Input -->
+        <div data-testid="login-otp-group" class="otp-input" role="group" aria-label="6-digit verification code">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 2">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 3">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 4">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 5">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 6">
+        </div>
+        <button type="submit" class="visually-hidden" data-testid="login-otp-submit-btn">Verify code</button>
+      </form>
 
       <div class="text-center">
         <p class="mb-4 hidden" data-testid="login-otp-expired-timer-text" style="color:var(--color-primary); font-weight:600;">You can request a new code in 00:28</p>

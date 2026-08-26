@@ -48,3 +48,21 @@ export const totpVerifySchema = z.object({
   code: z.string().regex(/^\d{6}$/, "Code must be 6 digits."),
   challengeId: z.string().optional(),
 });
+
+export const loginSchema = z.object({
+  identifier: z.string().trim().min(1, "Email or username is required.").max(320),
+  password: z.string().min(1, "Password is required.").max(72),
+  rememberMe: z.boolean().default(false),
+});
+
+export const loginChallengeSchema = z.object({
+  loginToken: z.string().min(32, "Login transaction is required."),
+  method: z.enum(["AUTHENTICATOR", "SMS", "EMAIL"]),
+});
+
+export const loginOtpSchema = z.object({
+  loginToken: z.string().min(32, "Login transaction is required."),
+  method: z.enum(["AUTHENTICATOR", "SMS", "EMAIL"]),
+  challengeId: z.string().min(1, "Challenge ID is required."),
+  otp: z.string().regex(/^\d{6}$/, "OTP must be 6 digits."),
+});

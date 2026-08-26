@@ -25,6 +25,8 @@ enum OtpPurpose {
   MFA_VERIFY_EMAIL
   MFA_TOTP_SETUP
   MFA_TOTP_VERIFY
+  LOGIN_EMAIL
+  LOGIN_SMS
 }
 
 enum MfaMethod {
@@ -34,35 +36,91 @@ enum MfaMethod {
 }
 
 model User {
-  id                  String         @id @default(cuid())
+  id                  String             @id @default(cuid())
   name                String
-  email               String         @unique
+  email               String             @unique
   passwordHash        String
-  status              UserStatus     @default(PENDING)
-  emailVerified       Boolean        @default(false)
+  status              UserStatus         @default(PENDING)
+  emailVerified       Boolean            @default(false)
   phone               String?
-  phoneVerified       Boolean        @default(false)
-  mfaEnabled          Boolean        @default(false)
+  phoneVerified       Boolean            @default(false)
+  mfaEnabled          Boolean            @default(false)
   mfaMethod           MfaMethod?
-  totpSecretEncrypted String?        // AES-256-GCM ciphertext
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
+  totpSecretEncrypted String? // AES-256-GCM ciphertext
+  lastTotpCounter     Int? // Prevents accepting the same TOTP time-step twice
+  failedLoginAttempts Int                @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
   challenges          OtpChallenge[]
+  loginTransactions   LoginTransaction[]
+  sessions            Session[]
+  accessTokens        AccessToken[]
 }
 
 model OtpChallenge {
-  id          String     @id @default(cuid())
-  userId      String
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  channel     OtpChannel
-  purpose     OtpPurpose
-  otpHash     String
-  expiresAt   DateTime
-  attempts    Int        @default(0)
-  maxAttempts Int        @default(5)
-  consumedAt  DateTime?
-  createdAt   DateTime   @default(now())
+  id               String     @id @default(cuid())
+  userId           String
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel          OtpChannel
+  purpose          OtpPurpose
+  otpHash          String
+  testOtpEncrypted String?
+  expiresAt        DateTime
+  attempts         Int        @default(0)
+  maxAttempts      Int        @default(5)
+  consumedAt       DateTime?
+  createdAt        DateTime   @default(now())
 
   @@index([userId, channel, purpose])
+  @@index([expiresAt])
+}
+
+model LoginTransaction {
+  id             String     @id @default(cuid())
+  tokenHash      String     @unique
+  userId         String
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  selectedMethod MfaMethod?
+  rememberMe     Boolean    @default(false)
+  attempts       Int        @default(0)
+  maxAttempts    Int        @default(5)
+  expiresAt      DateTime
+  consumedAt     DateTime?
+  createdAt      DateTime   @default(now())
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+model Session {
+  id           String        @id @default(cuid())
+  tokenHash    String        @unique
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rememberMe   Boolean       @default(false)
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  createdAt    DateTime      @default(now())
+  lastSeenAt   DateTime      @default(now())
+  accessTokens AccessToken[]
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+model AccessToken {
+  id        String    @id // JWT jti
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId String
+  session   Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  issuedAt  DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  @@index([userId, expiresAt])
+  @@index([sessionId])
   @@index([expiresAt])
 }
