@@ -27,6 +27,7 @@ enum OtpPurpose {
   MFA_TOTP_VERIFY
   LOGIN_EMAIL
   LOGIN_SMS
+  PASSWORD_RECOVERY
 }
 
 enum MfaMethod {

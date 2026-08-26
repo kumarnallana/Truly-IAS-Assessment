@@ -88,6 +88,15 @@ function updateStepper(step) {
   }
 }
 
+function stopTimers() {
+  if (state.timers) {
+    Object.keys(state.timers).forEach(key => {
+      clearInterval(state.timers[key]);
+      state.timers[key] = null;
+    });
+  }
+}
+
 // Screen Switcher
 window.showScreen = showScreen;
 export function showScreen(screenKey) {

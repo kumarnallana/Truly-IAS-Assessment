@@ -9,6 +9,7 @@ import { issueCsrfToken, requireCsrf } from "./lib/csrf.js";
 import registrationRoutes from "./routes/registration.routes.js";
 import mfaRoutes from "./routes/mfa.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import forgotPasswordRoutes from "./routes/forgot-password.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -58,6 +59,7 @@ app.use("/api", requireCsrf);
 app.use("/api", registrationRoutes);
 app.use("/api", mfaRoutes);
 app.use("/api", authRoutes);
+app.use("/api", forgotPasswordRoutes);
 
 app.use("/api", (req, res) => {
   res.status(404).json({ code: "NOT_FOUND", message: "API endpoint not found." });
