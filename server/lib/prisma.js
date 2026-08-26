@@ -3,13 +3,7 @@ import "dotenv/config";
 
 const globalForPrisma = globalThis;
 
-function createPrismaClient() {
-  return new PrismaClient({
-    datasourceUrl: process.env.DIRECT_URL ?? process.env.DATABASE_URL,
-  });
-}
-
-export const prisma = globalForPrisma.__prisma ?? createPrismaClient();
+export const prisma = globalForPrisma.__prisma ?? new PrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.__prisma = prisma;
