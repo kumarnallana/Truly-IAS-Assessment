@@ -47,7 +47,7 @@
 
           <div data-testid="error-form" class="alert-banner alert-banner--error" style="display: none;" role="alert"></div>
 
-          <form data-testid="registration-form" novalidate>
+          <form data-testid="registration-form" class="registration-form" novalidate>
             <!-- Full Name -->
             <div class="form-field">
               <label for="reg-fullname" class="form-field__label">Full Name</label>
@@ -107,7 +107,7 @@
                   class="form-field__input"
                   placeholder="••••••••••••"
                   autocomplete="new-password"
-                  aria-describedby="password-requirements-inline error-password"
+                  aria-describedby="password-requirements error-password"
                   required
                 >
                 <button type="button" data-testid="toggle-password-btn" class="form-field__password-toggle" aria-label="Toggle password visibility">
@@ -115,24 +115,25 @@
                 </button>
               </div>
               <span data-testid="error-password" class="form-field__error-text" style="display: none;"></span>
+            </div>
 
-              <div id="password-requirements-inline" data-testid="password-rules-mobile" class="password-rules password-rules--inline" aria-live="polite">
-                <div class="password-rules__title">Password must contain:</div>
-                <ul class="password-rules__list">
-                  <li data-testid="rule-length-mobile" data-password-rule="length" class="password-rules__item">
-                    <span class="password-rules__icon">✓</span> At least 8 characters
-                  </li>
-                  <li data-testid="rule-uppercase-mobile" data-password-rule="uppercase" class="password-rules__item">
-                    <span class="password-rules__icon">✓</span> 1 uppercase letter
-                  </li>
-                  <li data-testid="rule-number-mobile" data-password-rule="number" class="password-rules__item">
-                    <span class="password-rules__icon">✓</span> 1 number
-                  </li>
-                  <li data-testid="rule-special-mobile" data-password-rule="special" class="password-rules__item">
-                    <span class="password-rules__icon">✓</span> 1 special character
-                  </li>
-                </ul>
-              </div>
+            <!-- One semantic checklist: inline on mobile, positioned beside the form on desktop. -->
+            <div id="password-requirements" data-testid="password-rules" class="password-rules" aria-live="polite">
+              <div class="password-rules__title">Password must contain:</div>
+              <ul class="password-rules__list">
+                <li data-testid="rule-length" data-password-rule="length" class="password-rules__item">
+                  <span class="password-rules__icon">✓</span> At least 8 characters
+                </li>
+                <li data-testid="rule-uppercase" data-password-rule="uppercase" class="password-rules__item">
+                  <span class="password-rules__icon">✓</span> 1 uppercase letter
+                </li>
+                <li data-testid="rule-number" data-password-rule="number" class="password-rules__item">
+                  <span class="password-rules__icon">✓</span> 1 number
+                </li>
+                <li data-testid="rule-special" data-password-rule="special" class="password-rules__item">
+                  <span class="password-rules__icon">✓</span> 1 special character
+                </li>
+              </ul>
             </div>
 
             <!-- Terms Checkbox -->
@@ -152,28 +153,6 @@
             </div>
           </form>
         </div> <!-- End Form Column -->
-
-        <!-- Right Column: Password Requirements -->
-        <div class="auth-card__rules-column">
-          <!-- Password Checklist -->
-          <div data-testid="password-rules" class="password-rules" aria-live="polite">
-            <div class="password-rules__title">Password must contain:</div>
-            <ul class="password-rules__list">
-              <li data-testid="rule-length" data-password-rule="length" class="password-rules__item">
-                <span class="password-rules__icon">✓</span> At least 8 characters
-              </li>
-              <li data-testid="rule-uppercase" data-password-rule="uppercase" class="password-rules__item">
-                <span class="password-rules__icon">✓</span> 1 uppercase letter
-              </li>
-              <li data-testid="rule-number" data-password-rule="number" class="password-rules__item">
-                <span class="password-rules__icon">✓</span> 1 number
-              </li>
-              <li data-testid="rule-special" data-password-rule="special" class="password-rules__item">
-                <span class="password-rules__icon">✓</span> 1 special character
-              </li>
-            </ul>
-          </div>
-        </div> <!-- End Rules Column -->
 
       </div> <!-- End Grid -->
     </section>

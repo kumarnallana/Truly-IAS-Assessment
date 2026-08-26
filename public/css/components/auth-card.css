@@ -19,9 +19,6 @@
     box-shadow: none;
   }
   
-  .auth-card__rules-column {
-    margin-top: 2rem;
-  }
 }
 
 @media (max-width: 1023px) {
@@ -29,9 +26,6 @@
     display: none !important;
   }
 
-  .auth-card__rules-column {
-    display: none;
-  }
 }
 
 /* Desktop Exact Structural Layouts */
@@ -43,15 +37,31 @@
   }
 
   .auth-card__grid {
-    display: grid;
-    grid-template-columns: 55% 40%;
-    gap: 5%;
-    align-items: start;
+    display: block;
     width: 100%;
   }
 
-  .auth-card__rules-column {
-    margin-top: 260px; /* Aligns visually with the Password field below the 3 new fields */
+  .auth-card--registration .auth-card__form-column > .screen-header,
+  .auth-card--registration .auth-card__form-column > [data-testid="error-form"] {
+    width: 55%;
+  }
+
+  .registration-form {
+    display: grid;
+    grid-template-columns: 55% 40%;
+    column-gap: 5%;
+    align-items: start;
+  }
+
+  .registration-form > :not(.password-rules) {
+    grid-column: 1;
+  }
+
+  .registration-form > .password-rules {
+    grid-column: 2;
+    grid-row: 1 / span 8;
+    align-self: start;
+    margin-top: 260px;
   }
 
   .auth-card__top-bar {

@@ -137,7 +137,7 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     await page.getByTestId('reg-password').fill('Password@123');
 
     const passwordBox = await page.getByTestId('reg-password').boundingBox();
-    const rulesBox = await page.getByTestId('password-rules-mobile').boundingBox();
+    const rulesBox = await page.getByTestId('password-rules').boundingBox();
     const termsBox = await page.getByTestId('reg-terms').boundingBox();
 
     expect(passwordBox).not.toBeNull();
@@ -145,9 +145,10 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     expect(termsBox).not.toBeNull();
     expect(rulesBox.y).toBeGreaterThan(passwordBox.y);
     expect(rulesBox.y).toBeLessThan(termsBox.y);
-    await expect(page.getByTestId('rule-length-mobile')).toHaveClass(/password-rules__item--valid/);
-    await expect(page.getByTestId('rule-uppercase-mobile')).toHaveClass(/password-rules__item--valid/);
-    await expect(page.getByTestId('rule-number-mobile')).toHaveClass(/password-rules__item--valid/);
-    await expect(page.getByTestId('rule-special-mobile')).toHaveClass(/password-rules__item--valid/);
+    await expect(page.getByTestId('password-rules')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    await expect(page.getByTestId('rule-length')).toHaveClass(/password-rules__item--valid/);
+    await expect(page.getByTestId('rule-uppercase')).toHaveClass(/password-rules__item--valid/);
+    await expect(page.getByTestId('rule-number')).toHaveClass(/password-rules__item--valid/);
+    await expect(page.getByTestId('rule-special')).toHaveClass(/password-rules__item--valid/);
   });
 });
