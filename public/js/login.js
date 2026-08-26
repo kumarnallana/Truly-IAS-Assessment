@@ -1,5 +1,5 @@
 import { apiRequest } from "./api.js";
-import { setFieldErrors, clearFieldError, clearAllFieldErrors } from "./validation.js";
+import { setFieldErrors, clearFieldError, clearAllFieldErrors, setupPasswordToggle } from "./validation.js";
 
 const state = {
   loginToken: null,
@@ -317,11 +317,13 @@ document.querySelectorAll('input[name="login-mfa-method"]').forEach((radio) => {
   radio.addEventListener("change", updateSelectedMethodCard);
 });
 
-document.querySelector('[data-testid="toggle-login-password-btn"]')?.addEventListener("click", (event) => {
-  const reveal = passwordInput.type === "password";
-  passwordInput.type = reveal ? "text" : "password";
-  event.currentTarget.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
-});
+setupPasswordToggle('[data-testid="login-password"]', '[data-testid="toggle-login-password-btn"]');
+
+// Explicit Auth State Navigation Map
+const AUTH_BACK_ROUTES = {
+  "login-mfa-choice-screen": "login-screen",
+  "login-otp-screen": "login-mfa-choice-screen"
+};
 
 // Global Back Button Handler for Login Flow
 document.addEventListener("click", (event) => {
@@ -332,11 +334,11 @@ document.addEventListener("click", (event) => {
   if (!activeScreen) return;
   
   const screenId = activeScreen.getAttribute("data-testid");
-  if (screenId === "login-mfa-choice-screen") {
-    showScreen("login-screen");
-  } else if (screenId === "login-otp-screen") {
-    stopTimers();
-    showScreen("login-mfa-choice-screen");
+  const previousState = AUTH_BACK_ROUTES[screenId];
+
+  if (previousState) {
+    if (screenId === "login-otp-screen") stopTimers();
+    showScreen(previousState);
   }
 });
 

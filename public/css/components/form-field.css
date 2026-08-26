@@ -108,10 +108,15 @@
   position: absolute;
   left: 1rem;
   color: var(--color-text-muted);
-  font-size: 1.125rem;
+  font-size: var(--icon-size-input);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 150ms ease;
+}
+
+.form-field__icon-wrapper:focus-within .form-field__leading-icon {
+  color: var(--color-border-focus);
 }
 
 /* Adjust input padding when leading icon is present */
@@ -132,13 +137,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: background-color 150ms ease, opacity 150ms ease;
+  border-radius: 8px;
+  transition: all 140ms ease;
 }
 
-.form-field__password-toggle:hover {
+.form-field__password-toggle svg {
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.form-field__password-toggle:hover,
+.form-field__password-toggle:focus-visible {
   background-color: var(--color-bg-page);
   color: var(--color-text-main);
+}
+
+.form-field__password-toggle:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.form-field__password-toggle:active {
+  transform: scale(0.97);
 }
 
 /* Checkbox Label */

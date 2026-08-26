@@ -119,6 +119,25 @@
     text-align: center;
   }
 
+  .auth-card__brand-icon {
+    font-size: var(--icon-size-brand);
+    margin-bottom: 1.5rem;
+    line-height: 1;
+  }
+
+  .auth-card__brand-title {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .auth-card__brand-desc {
+    opacity: 0.9;
+    font-size: 1.125rem;
+    max-width: 280px;
+    line-height: 1.5;
+  }
+
   .auth-card__form-panel {
     width: var(--desktop-login-form-ratio);
     padding: 3rem;

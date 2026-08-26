@@ -1,5 +1,5 @@
 import { apiRequest } from "./api.js";
-import { setFieldErrors, clearFieldError, clearAllFieldErrors } from "./validation.js";
+import { setFieldErrors, clearFieldError, clearAllFieldErrors, setupPasswordToggle } from "./validation.js";
 import { selectMfaMethod, verifyMfaCode } from "./mfa.js";
 
 /**
@@ -254,14 +254,7 @@ if (passwordInput) {
   evaluatePasswordRules();
 }
 
-// Password toggle visibility
-if (togglePasswordBtn && passwordInput) {
-  togglePasswordBtn.addEventListener("click", () => {
-    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-    passwordInput.setAttribute("type", type);
-    togglePasswordBtn.textContent = type === "password" ? "👁" : "🔒";
-  });
-}
+  setupPasswordToggle('[data-testid="reg-password"]', '[data-testid="toggle-password-btn"]');
 
 // Client-side mirror validation
 function validateRegForm(data) {
@@ -606,6 +599,16 @@ if (toggleManualKeyBtn && manualKeyContainer) {
   });
 }
 
+// Explicit Auth State Navigation Map
+const AUTH_BACK_ROUTES = {
+  "registration": "login.html",
+  "emailOtp": "registration",
+  "smsOtp": "emailOtp",
+  "mfaChoice": "smsOtp",
+  "authenticatorSetup": "mfaChoice",
+  "mfaVerify": "mfaChoice"
+};
+
 // Global Back Button Handler for Registration Flow
 document.addEventListener("click", (event) => {
   const backBtn = event.target.closest(".btn--back");
@@ -615,17 +618,21 @@ document.addEventListener("click", (event) => {
   if (!activeScreen) return;
   
   const screenId = activeScreen.getAttribute("data-testid");
+  // showScreen takes the key like "emailOtp", but data-testid is "email-otp-screen"
+  // Let's find the current screen key by checking `screens` mapping
+  const currentScreenKey = Object.keys(screens).find(key => screens[key] === activeScreen);
+  const previousState = AUTH_BACK_ROUTES[currentScreenKey];
   
-  // Determine previous screen based on state machine
-  if (screenId === "authenticator-setup-screen") {
-    showScreen("mfaChoice");
-  } else if (screenId === "mfa-verify-screen") {
-    showScreen("mfaChoice");
-  } else if (screenId === "mfa-choice-screen") {
-    // Typically shouldn't go back from here as account is verified, but if needed:
-    // showScreen("registration");
-  } else if (screenId === "sms-otp-screen" || screenId === "email-otp-screen") {
-    // showScreen("registration"); 
+  if (previousState) {
+    if (previousState.endsWith(".html")) {
+      window.location.href = previousState;
+      return;
+    }
+    
+    if (currentScreenKey === "emailOtp" || currentScreenKey === "smsOtp") {
+      stopTimers();
+    }
+    showScreen(previousState);
   }
 });
 
