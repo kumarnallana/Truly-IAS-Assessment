@@ -10,9 +10,9 @@ export const registerSchema = z.object({
     .regex(/[A-Z]/, "Password must contain at least 1 uppercase letter.")
     .regex(/[0-9]/, "Password must contain at least 1 number.")
     .regex(/[^A-Za-z0-9]/, "Password must contain at least 1 special character."),
-  confirmPassword: z.string(),
+  confirmPassword: z.string().optional(),
   phone: z.string().trim().min(7, "Phone number is too short.").max(20),
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data) => !data.confirmPassword || data.password === data.confirmPassword, {
   path: ["confirmPassword"],
   message: "Passwords do not match.",
 });

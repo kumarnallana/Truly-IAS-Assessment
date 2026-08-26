@@ -19,6 +19,7 @@ const loginButton = document.querySelector('[data-testid="login-submit-btn"]');
 const loginError = document.querySelector('[data-testid="error-login"]');
 const methodForm = document.querySelector('[data-testid="login-mfa-choice-form"]');
 const methodButton = document.querySelector('[data-testid="login-mfa-choice-continue-btn"]');
+const methodError = document.querySelector('[data-testid="login-method-error"]');
 const otpForm = document.querySelector('[data-testid="login-otp-form"]');
 const otpInputs = Array.from(document.querySelectorAll('[data-testid="login-otp-group"] .otp-input__box'));
 const otpError = document.querySelector('[data-testid="login-otp-error"]');
@@ -217,6 +218,7 @@ async function createChallenge() {
   const selected = document.querySelector('input[name="login-mfa-method"]:checked:not(:disabled)');
   if (!selected || !state.loginToken) return;
   state.method = selected.value;
+  methodError.classList.add("hidden");
   setButtonLoading(methodButton, true, "Continue", "Sending...");
   try {
     const challenge = await apiRequest("/login/challenge", {
@@ -230,7 +232,8 @@ async function createChallenge() {
       setLoginError("Your login attempt expired. Please sign in again.");
       showScreen("login-screen");
     } else {
-      window.alert(error.message);
+      methodError.textContent = error.message;
+      methodError.classList.remove("hidden");
     }
   } finally {
     setButtonLoading(methodButton, false, "Continue", "Sending...");

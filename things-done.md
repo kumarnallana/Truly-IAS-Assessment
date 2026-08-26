@@ -2,11 +2,13 @@
 
 This document serves as a comprehensive handover report for the development team. It outlines the architectural decisions, features implemented, and testing strategies established during the reconstruction of the SecureID Authentication flows.
 
+Part 2 is complete. The login UI is connected to the Express/Prisma backend, MFA creates an opaque server-side session, and an authenticated session can issue a short-lived JWT for the protected API demonstration. The permanent security decisions and threat model are in `docs/part-2-architecture-contract.md`.
+
 ## 1. Tech Stack & Environment
 
 - **Core Technologies**: Pure HTML5, CSS3 (Vanilla), and Vanilla JavaScript (ES6+). No heavy frameworks (like React or Vue) were used, keeping the application lightweight, fast, and highly customizable.
 - **Testing Framework**: Playwright (for both E2E Functional testing and Visual Regression testing).
-- **Development Server**: `http-server` (running locally on port 4000).
+- **Application Server**: Node.js/Express (running locally on port 4000 and serving both the API and static frontend).
 
 ## 2. Directory Structure
 
@@ -14,7 +16,9 @@ This document serves as a comprehensive handover report for the development team
   - `/public/index.html`: Registration Page.
   - `/public/login.html`: Login Page.
   - `/public/css/`: All styling. Note the separation of `tokens.css` (variables) and `/components/` (modular UI blocks).
-  - `/public/js/`: Vanilla JS logic (`registration.js`, `login.js`, `api.js` for mocked endpoints, and `otp-input.js`).
+  - `/public/js/`: Vanilla JS logic (`registration.js`, `login.js`, `dashboard.js`, and the live same-origin `api.js` client).
+- `/server/`: Express routes, controllers, security middleware, and authentication services.
+- `/prisma/`: PostgreSQL schema and migration for users, challenges, login transactions, sessions, and JWT grants.
 - `/tests/`: Contains the Playwright test suites.
   - `/tests/regression/functional/`: E2E flows testing the state machines and API interactions.
   - `/tests/regression/visual/`: The automated visual snapshot matrix (12 viewports, 80+ snapshots).
@@ -52,12 +56,14 @@ A complete, 7-step client-side state machine was implemented for the Registratio
 6.  **Success State**: Final transition into the active application state.
 
 ### Login Flow
-A robust 6-state login architecture:
+A backend-integrated login architecture:
 1.  **Default & Invalid States**: Standard email/password authentication with error handling.
 2.  **MFA Method Selection**: Choosing between Email, SMS, or Authenticator App.
 3.  **OTP Verification (Email/SMS)**: 
     *   Includes a specialized **Mobile OTP Keypad** designed specifically for touch devices, which synchronizes with the native hidden numeric input to preserve native form submission and password-manager autofill compatibility.
 4.  **Error & Expired States**: Full handling of wrong codes and timeout expirations.
+5.  **Server Session**: Fresh opaque, hashed-at-rest session material is created only after MFA; Remember Me extends only server-session lifetime.
+6.  **JWT Demonstration**: The authenticated dashboard exchanges its session for a short-lived, audience-restricted JWT held only in page memory.
 
 ## 4. State Management (DOM Logic)
 
@@ -82,7 +88,9 @@ A massive emphasis was placed on testability and regression prevention using **P
 For engineers taking over the codebase:
 
 ### Useful Commands
-*   **Start Local Dev Server**: `npx http-server public -p 4000`
+*   **Start Local Dev Server**: `npm start`
+*   **Validate/Generate Prisma Client**: `npm run prisma:generate`
+*   **Run Security Unit Tests**: `npm run test:unit`
 *   **Run All Tests (Functional & Visual)**: `npx playwright test`
 *   **Run Functional Tests Only**: `npx playwright test tests/regression/functional/`
 *   **Update Visual Snapshots**: `npx playwright test tests/regression/visual/ --update-snapshots` (Only run this if intentional UI changes are made!)
@@ -90,4 +98,4 @@ For engineers taking over the codebase:
 ### Integration Handoff
 1.  **Review the Tests**: Run `npx playwright test` to see the flows in action. The functional tests in `tests/regression/functional/` are the best documentation for how the state machine is intended to work.
 2.  **Component CSS**: When building new screens, heavily utilize the existing utility classes in `tokens.css` and the established block patterns in `auth-card.css`.
-3.  **Backend Integration**: The current frontend is wired to mock API endpoints. The transition to production will require pointing the `apiRequest` utility (`public/js/api.js`) to the real backend microservices and mapping the API response schemas to match what the frontend state machine expects.
+3.  **Environment Setup**: Replace the placeholder database URL and secrets in `.env`, apply the Prisma schema, and run `npm start`. Production must use HTTPS, `COOKIE_SECURE=true`, and an independent `JWT_SECRET`.

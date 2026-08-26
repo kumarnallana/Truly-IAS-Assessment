@@ -6,6 +6,7 @@ node_modules/
 .vercel/
 dist/
 build/
+test-results/
 .DS_Store
 
 # Python virtual environments (not needed for this Node.js project)

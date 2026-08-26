@@ -15,10 +15,10 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     await page.route('**/api/verify-sms-otp', async route => {
       await route.fulfill({ body: JSON.stringify({ success: true }), contentType: 'application/json' });
     });
-    await page.route('**/api/mfa/setup', async route => {
-      await route.fulfill({ body: JSON.stringify({ qrCodeDataUrl: 'data:image/png;base64,...', base32Secret: 'SECRET123', challengeId: 'mfa-challenge' }), contentType: 'application/json' });
+    await page.route('**/api/mfa/select-method', async route => {
+      await route.fulfill({ body: JSON.stringify({ qrCodeDataUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==', base32Secret: 'SECRET123', challengeId: 'mfa-challenge' }), contentType: 'application/json' });
     });
-    await page.route('**/api/verify-mfa-setup', async route => {
+    await page.route('**/api/mfa/verify', async route => {
       await route.fulfill({ body: JSON.stringify({ registrationComplete: true }), contentType: 'application/json' });
     });
 
@@ -75,8 +75,7 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     for (let i = 0; i < 6; i++) {
       await mfaInputs.nth(i).fill('3');
     }
-    await page.getByRole('button', { name: 'Verify & Complete' }).click();
-
+    // Completing the sixth digit auto-submits the verification.
     // 9. Success Screen
     await expect(page.getByRole('heading', { name: 'Account created!' })).toBeVisible();
   });

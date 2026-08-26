@@ -198,6 +198,7 @@ const regForm = document.querySelector('[data-testid="registration-form"]');
 const fullnameInput = document.querySelector('[data-testid="reg-fullname"]');
 const emailInput = document.querySelector('[data-testid="reg-email"]');
 const mobileInput = document.querySelector('[data-testid="reg-mobile"]');
+const countryCodeInput = document.querySelector('.form-field__prefix-select');
 const passwordInput = document.querySelector('[data-testid="reg-password"]');
 const togglePasswordBtn = document.querySelector('[data-testid="toggle-password-btn"]');
 const regSubmitBtn = document.querySelector('[data-testid="reg-submit-btn"]');
@@ -296,14 +297,18 @@ if (regForm) {
         body: {
           name: formData.fullname,
           email: formData.email,
-          phone: formData.mobile,
+          phone: `${countryCodeInput?.value || ""}${formData.mobile.replace(/\D/g, "")}`,
           password: formData.password,
         },
       });
 
       state.userId = response.userId;
       state.email = formData.email;
-      state.phone = formData.mobile;
+      const phoneDigits = formData.mobile.replace(/\D/g, "");
+      const formattedPhone = phoneDigits.length === 10
+        ? `${phoneDigits.slice(0, 5)} ${phoneDigits.slice(5)}`
+        : formData.mobile;
+      state.phone = `${countryCodeInput?.value || ""} ${formattedPhone}`.trim();
       state.emailChallengeId = response.challengeId;
 
       initEmailOtpScreen();

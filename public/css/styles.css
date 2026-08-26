@@ -52,6 +52,12 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .screen[data-active="true"] {
+    animation: none;
+  }
+}
+
 /* 5. Utility classes */
 .text-bold { font-weight: 600; }
 .hidden { display: none !important; }
@@ -132,4 +138,11 @@ body {
   line-height: 1.5;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
+}
+
+@media (max-width: 767px) {
+  .auth-card--login [data-testid="login-otp-screen"] .screen-header__subtitle,
+  .auth-card--login [data-testid="login-otp-screen"] .auth-footer {
+    color: #5f6368;
+  }
 }

@@ -34,7 +34,7 @@
         <p class="screen-header__subtitle">Login to your account</p>
       </div>
 
-      <div data-testid="error-login" class="alert-banner alert-banner--error hidden" role="alert">
+      <div id="error-login" data-testid="error-login" class="alert-banner alert-banner--error hidden" role="alert">
         Invalid email or password. Please try again.
       </div>
 
@@ -47,6 +47,7 @@
             data-testid="login-email"
             class="form-field__input"
             placeholder="Email or Username"
+            aria-label="Email or Username"
             autocomplete="username"
             aria-describedby="error-login"
             required
@@ -62,6 +63,7 @@
               data-testid="login-password"
               class="form-field__input"
               placeholder="••••••••••••"
+              aria-label="Password"
               autocomplete="current-password"
               required
             >
@@ -105,6 +107,8 @@
         <h1 id="title-mfa-choice" class="screen-header__title">Verify your identity</h1>
         <p class="screen-header__subtitle">Choose a method to continue</p>
       </div>
+
+      <div data-testid="login-method-error" class="alert-banner alert-banner--error hidden" role="alert"></div>
 
       <form data-testid="login-mfa-choice-form">
         <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom: 2rem;">
@@ -197,7 +201,7 @@
     <button type="button" class="mobile-keypad__btn" data-key="7">7</button>
     <button type="button" class="mobile-keypad__btn" data-key="8">8</button>
     <button type="button" class="mobile-keypad__btn" data-key="9">9</button>
-    <button type="button" class="mobile-keypad__btn" data-key="blank" disabled></button>
+    <button type="button" class="mobile-keypad__btn" data-key="blank" disabled aria-hidden="true"></button>
     <button type="button" class="mobile-keypad__btn" data-key="0">0</button>
     <button type="button" class="mobile-keypad__btn mobile-keypad__btn--icon" aria-label="Backspace" data-key="backspace">⌫</button>
   </div>
