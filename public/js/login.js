@@ -62,7 +62,7 @@ function setLoginError(message = "") {
 function clearOtpState({ clearInputs = false } = {}) {
   otpError.classList.add("hidden");
   otpExpired.classList.add("hidden");
-  otpInputs.forEach((input) => input.classList.remove("input--error", "error"));
+  otpInputs.forEach((input) => input.classList.remove("otp-input__box--error"));
   if (clearInputs) otpInputs.forEach((input) => { input.value = ""; });
 }
 
@@ -94,7 +94,7 @@ function showExpiredState() {
   expiredTimerText.classList.remove("hidden");
   resendFooter?.classList.add("hidden");
   if (state.method !== "AUTHENTICATOR") resendButton.classList.remove("hidden");
-  otpInputs.forEach((input) => input.classList.add("input--error"));
+  otpInputs.forEach((input) => input.classList.add("otp-input__box--error"));
 }
 
 function startExpiryTimer(expiresAt) {
@@ -255,17 +255,17 @@ async function verifyCode() {
     stopTimers();
     window.location.assign(response.redirectTo || "/dashboard.html");
   } catch (error) {
-    otpInputs.forEach((input) => input.classList.add("input--error"));
+    otpInputs.forEach((input) => input.classList.add("otp-input__box--error"));
     if (error.code === "OTP_EXPIRED" || error.code === "LOGIN_TRANSACTION_EXPIRED") {
       showExpiredState();
     } else {
       const remaining = error.details?.attemptsRemaining;
-      otpErrorMessage.textContent = error.message;
-      if (remaining !== undefined) {
-        otpErrorMessage.append(
-          document.createElement("br"),
-          document.createTextNode(`You have ${remaining} attempt${remaining === 1 ? "" : "s"} left.`),
-        );
+      const errorContent = document.querySelector('[data-testid="login-otp-error-content"]');
+      if (errorContent) {
+        errorContent.innerHTML = `
+          ${error.message}
+          ${remaining !== undefined ? `<span class="feedback__meta">You have ${remaining} attempt${remaining === 1 ? "" : "s"} left.</span>` : ''}
+        `;
       }
       otpError.classList.remove("hidden");
     }
@@ -286,7 +286,10 @@ async function resendCode() {
     });
     renderOtpScreen(challenge);
   } catch (error) {
-    otpErrorMessage.textContent = error.message;
+    const errorContent = document.querySelector('[data-testid="login-otp-error-content"]');
+    if (errorContent) {
+      errorContent.innerHTML = error.message;
+    }
     otpError.classList.remove("hidden");
   } finally {
     resendButton.disabled = false;

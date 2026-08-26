@@ -2,6 +2,34 @@ import { apiRequest } from "./api.js";
 import { selectMfaMethod, verifyMfaCode } from "./mfa.js";
 
 /**
+ * UI Feedback helper
+ */
+function showFeedback(element, type, mainText, metaText = "") {
+  if (!element) return;
+  if (!mainText) {
+    element.classList.add("hidden");
+    return;
+  }
+  
+  element.className = `feedback feedback--${type}`;
+  element.classList.remove("hidden");
+  
+  const icon = type === "error" ? "⚠️" : (type === "info" ? "ℹ️" : "✅");
+  const contentEl = element.querySelector(".feedback__content");
+  if (contentEl) {
+    contentEl.innerHTML = `
+      ${mainText}
+      ${metaText ? `<span class="feedback__meta">${metaText}</span>` : ""}
+    `;
+  }
+  
+  const iconEl = element.querySelector(".feedback__icon");
+  if (iconEl) {
+    iconEl.textContent = icon;
+  }
+}
+
+/**
  * Global Registration Flow State
  */
 const state = {
@@ -109,7 +137,7 @@ function setupOtpInputs(containerId, onComplete) {
       const val = e.target.value.replace(/\D/g, "");
       e.target.value = val ? val[val.length - 1] : "";
 
-      inputs.forEach((i) => i.classList.remove("error"));
+      inputs.forEach((i) => i.classList.remove("otp-input__box--error"));
 
       if (e.target.value && index < inputs.length - 1) {
         inputs[index + 1].focus();
@@ -153,14 +181,14 @@ function setupOtpInputs(containerId, onComplete) {
     clear: () => {
       inputs.forEach((i) => {
         i.value = "";
-        i.classList.remove("error");
+        i.classList.remove("otp-input__box--error");
       });
       inputs[0]?.focus();
     },
-    setInvalid: (isError = true) => {
+    setInvalid: (invalid = true) => {
       inputs.forEach((i) => {
-        if (isError) i.classList.add("error");
-        else i.classList.remove("error");
+        if (invalid) i.classList.add("otp-input__box--error");
+        else i.classList.remove("otp-input__box--error");
       });
     },
   };
@@ -267,8 +295,12 @@ function displayFieldErrors(errors) {
     const errSpan = document.querySelector(`[data-testid="error-${field}"]`);
     const inputEl = document.querySelector(`[data-testid="reg-${field}"]`);
     if (errSpan) {
-      errSpan.textContent = errors[field] || "";
-      errSpan.style.display = errors[field] ? "block" : "none";
+      if (field === "form") {
+        showFeedback(errSpan, "error", errors[field] || "");
+      } else {
+        errSpan.textContent = errors[field] || "";
+        errSpan.style.display = errors[field] ? "block" : "none";
+      }
     }
     if (inputEl && inputEl.type !== "checkbox") {
       inputEl.setAttribute("aria-invalid", !!errors[field]);
@@ -352,16 +384,14 @@ const emailVerifyBtn = document.querySelector('[data-testid="email-verify-btn"]'
 function initEmailOtpScreen() {
   document.querySelector('[data-testid="email-otp-target"]').textContent = state.email;
   emailOtpInputs.clear();
-  emailErrorBanner.style.display = "none";
+  showFeedback(emailErrorBanner, null);
   emailVerifyBtn.style.display = "flex";
   emailResendBtn.style.display = "none";
 
   clearInterval(state.timers.emailExpiry);
   state.timers.emailExpiry = startTimer(300, emailExpiryTimerSpan, () => {
     // Expired State (2b)
-    emailErrorBanner.className = "alert-banner warning";
-    emailErrorBanner.textContent = "This code has expired.";
-    emailErrorBanner.style.display = "flex";
+    showFeedback(emailErrorBanner, "error", "This code has expired.", "Please request a new code.");
     emailOtpInputs.setInvalid(true);
     emailResendBtn.textContent = "Resend New Code";
     emailResendBtn.style.display = "flex";
@@ -371,15 +401,13 @@ function initEmailOtpScreen() {
 async function handleEmailOtpVerify() {
   const otp = emailOtpInputs.getOtp();
   if (otp.length !== 6) {
-    emailErrorBanner.className = "alert-banner error";
-    emailErrorBanner.textContent = "Please enter the complete 6-digit code.";
-    emailErrorBanner.style.display = "flex";
+    showFeedback(emailErrorBanner, "info", "Please enter the complete 6-digit code.");
     return;
   }
 
   emailVerifyBtn.disabled = true;
   emailVerifyBtn.textContent = "Verifying...";
-  emailErrorBanner.style.display = "none";
+  showFeedback(emailErrorBanner, null);
 
   try {
     await apiRequest("/verify-email-otp", {
@@ -402,16 +430,14 @@ async function handleEmailOtpVerify() {
     showScreen("smsOtp");
   } catch (err) {
     emailOtpInputs.setInvalid(true);
-    emailErrorBanner.className = "alert-banner error";
     if (err.status === 410) {
-      emailErrorBanner.textContent = "This code has expired.";
+      showFeedback(emailErrorBanner, "error", "This code has expired.", "Please request a new code.");
       emailResendBtn.style.display = "flex";
     } else if (err.details && err.details.attemptsRemaining !== undefined) {
-      emailErrorBanner.textContent = `Incorrect code. Please try again. You have ${err.details.attemptsRemaining} attempts left.`;
+      showFeedback(emailErrorBanner, "error", "Incorrect code. Please try again.", `You have ${err.details.attemptsRemaining} attempt${err.details.attemptsRemaining === 1 ? "" : "s"} left.`);
     } else {
-      emailErrorBanner.textContent = err.message;
+      showFeedback(emailErrorBanner, "error", err.message);
     }
-    emailErrorBanner.style.display = "flex";
   } finally {
     emailVerifyBtn.disabled = false;
     emailVerifyBtn.textContent = "Verify Email";
@@ -433,9 +459,7 @@ if (emailResendBtn) {
       state.emailChallengeId = res.challengeId;
       initEmailOtpScreen();
     } catch (err) {
-      emailErrorBanner.className = "alert-banner error";
-      emailErrorBanner.textContent = err.message;
-      emailErrorBanner.style.display = "flex";
+      showFeedback(emailErrorBanner, "error", err.message);
     } finally {
       emailResendBtn.disabled = false;
     }
@@ -454,16 +478,14 @@ const smsVerifyBtn = document.querySelector('[data-testid="sms-verify-btn"]');
 function initSmsOtpScreen() {
   document.querySelector('[data-testid="sms-otp-target"]').textContent = state.phone;
   smsOtpInputs.clear();
-  smsErrorBanner.style.display = "none";
+  showFeedback(smsErrorBanner, null);
   smsVerifyBtn.style.display = "flex";
   smsVerifyBtn.disabled = false;
   smsResendBtn.style.display = "none";
 
   clearInterval(state.timers.smsExpiry);
   state.timers.smsExpiry = startTimer(300, smsExpiryTimerSpan, () => {
-    smsErrorBanner.className = "alert-banner warning";
-    smsErrorBanner.textContent = "This code has expired.";
-    smsErrorBanner.style.display = "flex";
+    showFeedback(smsErrorBanner, "error", "This code has expired.", "Please request a new code.");
     smsOtpInputs.setInvalid(true);
     smsResendBtn.textContent = "Resend New Code";
     smsResendBtn.style.display = "flex";
@@ -473,15 +495,13 @@ function initSmsOtpScreen() {
 async function handleSmsOtpVerify() {
   const otp = smsOtpInputs.getOtp();
   if (otp.length !== 6) {
-    smsErrorBanner.className = "alert-banner error";
-    smsErrorBanner.textContent = "Please enter the complete 6-digit code.";
-    smsErrorBanner.style.display = "flex";
+    showFeedback(smsErrorBanner, "info", "Please enter the complete 6-digit code.");
     return;
   }
 
   smsVerifyBtn.disabled = true;
   smsVerifyBtn.textContent = "Verifying...";
-  smsErrorBanner.style.display = "none";
+  showFeedback(smsErrorBanner, null);
 
   try {
     await apiRequest("/verify-sms-otp", {
@@ -497,19 +517,17 @@ async function handleSmsOtpVerify() {
     showScreen("mfaChoice");
   } catch (err) {
     smsOtpInputs.setInvalid(true);
-    smsErrorBanner.className = "alert-banner error";
     if (err.status === 429) {
       // State 3b: Max attempts reached
-      smsErrorBanner.textContent = "Maximum attempts reached. Please request a new code.";
+      showFeedback(smsErrorBanner, "error", "Maximum attempts reached.", "Please request a new code.");
       smsVerifyBtn.disabled = true;
       smsResendBtn.textContent = "Resend New Code";
       smsResendBtn.style.display = "flex";
     } else if (err.details && err.details.attemptsRemaining !== undefined) {
-      smsErrorBanner.textContent = `Incorrect code. Please try again. You have ${err.details.attemptsRemaining} attempts left.`;
+      showFeedback(smsErrorBanner, "error", "Incorrect code. Please try again.", `You have ${err.details.attemptsRemaining} attempt${err.details.attemptsRemaining === 1 ? "" : "s"} left.`);
     } else {
-      smsErrorBanner.textContent = err.message;
+      showFeedback(smsErrorBanner, "error", err.message);
     }
-    smsErrorBanner.style.display = "flex";
   } finally {
     smsVerifyBtn.disabled = false;
     smsVerifyBtn.textContent = "Verify Mobile";
@@ -531,9 +549,7 @@ if (smsResendBtn) {
       state.smsChallengeId = res.challengeId;
       initSmsOtpScreen();
     } catch (err) {
-      smsErrorBanner.className = "alert-banner error";
-      smsErrorBanner.textContent = err.message;
-      smsErrorBanner.style.display = "flex";
+      showFeedback(smsErrorBanner, "error", err.message);
     } finally {
       smsResendBtn.disabled = false;
     }
@@ -625,7 +641,7 @@ const mfaVerifySubmitBtn = document.querySelector('[data-testid="mfa-verify-subm
 
 function initMfaVerifyScreen(method) {
   mfaOtpInputs.clear();
-  mfaErrorBanner.style.display = "none";
+  showFeedback(mfaErrorBanner, null);
   mfaVerifySubmitBtn.disabled = false;
 
   if (method === "AUTHENTICATOR") {
@@ -640,15 +656,13 @@ function initMfaVerifyScreen(method) {
 async function handleMfaVerify() {
   const code = mfaOtpInputs.getOtp();
   if (code.length !== 6) {
-    mfaErrorBanner.className = "alert-banner error";
-    mfaErrorBanner.textContent = "Please enter the complete 6-digit code.";
-    mfaErrorBanner.style.display = "flex";
+    showFeedback(mfaErrorBanner, "info", "Please enter the complete 6-digit code.");
     return;
   }
 
   mfaVerifySubmitBtn.disabled = true;
   mfaVerifySubmitBtn.textContent = "Verifying...";
-  mfaErrorBanner.style.display = "none";
+  showFeedback(mfaErrorBanner, null);
 
   try {
     const response = await verifyMfaCode({
@@ -663,13 +677,11 @@ async function handleMfaVerify() {
     }
   } catch (err) {
     mfaOtpInputs.setInvalid(true);
-    mfaErrorBanner.className = "alert-banner error";
     if (err.details && err.details.attemptsRemaining !== undefined) {
-      mfaErrorBanner.textContent = `Invalid code. Please try again. You have ${err.details.attemptsRemaining} attempts left.`;
+      showFeedback(mfaErrorBanner, "error", "Invalid code. Please try again.", `You have ${err.details.attemptsRemaining} attempt${err.details.attemptsRemaining === 1 ? "" : "s"} left.`);
     } else {
-      mfaErrorBanner.textContent = err.message;
+      showFeedback(mfaErrorBanner, "error", err.message);
     }
-    mfaErrorBanner.style.display = "flex";
   } finally {
     mfaVerifySubmitBtn.disabled = false;
     mfaVerifySubmitBtn.textContent = "Verify & Complete";

@@ -15,6 +15,7 @@
 @import url('./components/password-rules.css');
 @import url('./components/otp-input.css');
 @import url('./components/buttons.css');
+@import url('./components/feedback.css');
 
 /* 3. Base / Reset */
 *, *::before, *::after {

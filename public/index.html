@@ -46,7 +46,10 @@
             <p class="screen-header__subtitle">Let's get you started</p>
           </div>
 
-          <div data-testid="error-form" class="alert-banner alert-banner--error" style="display: none;" role="alert"></div>
+          <div data-testid="error-form" class="feedback feedback--error hidden" role="alert">
+            <div class="feedback__icon">⚠️</div>
+            <div class="feedback__content" data-testid="error-form-content"></div>
+          </div>
 
           <form data-testid="registration-form" class="registration-form" novalidate>
             <!-- Full Name -->
@@ -177,17 +180,20 @@
           <p class="screen-header__subtitle">We have sent a 6-digit code to <strong data-testid="email-otp-target">email@example.com</strong></p>
         </div>
 
-        <!-- Alert / Error message (State 2a, 2b) -->
-        <div data-testid="email-otp-error" class="alert-banner alert-banner--error hidden" role="alert"></div>
-
         <!-- 6-Box OTP Input -->
         <div data-testid="email-otp-group" class="otp-input" role="group" aria-label="6-digit email OTP">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 2">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 3">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 4">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 5">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 6">
+        </div>
+
+        <!-- Feedback Message -->
+        <div data-testid="email-otp-error" class="feedback feedback--error hidden" role="alert">
+          <div class="feedback__icon">⚠️</div>
+          <div class="feedback__content" data-testid="email-otp-error-content"></div>
         </div>
 
         <div class="text-center">
@@ -212,17 +218,20 @@
           <p class="screen-header__subtitle">We have sent a 6-digit code to <strong data-testid="sms-otp-target">+91 98765 43210</strong></p>
         </div>
 
-        <!-- Alert / Error message (State 3a, 3b) -->
-        <div data-testid="sms-otp-error" class="alert-banner alert-banner--error hidden" role="alert"></div>
-
         <!-- 6-Box OTP Input -->
         <div data-testid="sms-otp-group" class="otp-input" role="group" aria-label="6-digit mobile OTP">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 2">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 3">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 4">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 5">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 6">
+        </div>
+
+        <!-- Feedback Message -->
+        <div data-testid="sms-otp-error" class="feedback feedback--error hidden" role="alert">
+          <div class="feedback__icon">⚠️</div>
+          <div class="feedback__content" data-testid="sms-otp-error-content"></div>
         </div>
 
         <div class="text-center">
@@ -323,17 +332,20 @@
           <p data-testid="mfa-verify-subtitle" class="screen-header__subtitle">Enter the code from your authenticator app</p>
         </div>
 
-        <!-- Alert / Error message (State 6a) -->
-        <div data-testid="mfa-error-banner" class="alert-banner alert-banner--error hidden" role="alert"></div>
-
         <!-- 6-Box OTP Input -->
         <div data-testid="mfa-otp-group" class="otp-input" role="group" aria-label="6-digit MFA verification code">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 2">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 3">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 4">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 5">
-          <input type="text" maxlength="1" inputmode="numeric" class="otp-input__box" aria-label="Digit 6">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 1" autocomplete="one-time-code">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 2">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 3">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 4">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 5">
+          <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="otp-input__box" aria-label="Digit 6">
+        </div>
+
+        <!-- Feedback Message -->
+        <div data-testid="mfa-error-banner" class="feedback feedback--error hidden" role="alert">
+          <div class="feedback__icon">⚠️</div>
+          <div class="feedback__content" data-testid="mfa-error-content"></div>
         </div>
 
         <div class="text-center">

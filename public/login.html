@@ -163,16 +163,6 @@
         <p class="screen-header__subtitle" data-testid="login-otp-instructions">Enter the 6-digit code sent to <strong data-testid="login-otp-target">your email</strong></p>
       </div>
 
-      <!-- Alert / Error message (State 5 Wrong OTP) -->
-      <div data-testid="login-otp-error" class="alert-banner alert-banner--error hidden" role="alert">
-        <span data-testid="login-otp-error-message">Incorrect code. Please try again.<br>You have 2 attempts left.</span>
-      </div>
-
-      <!-- Alert / Expired message (State 6 Expired) -->
-      <div data-testid="login-otp-expired" class="alert-banner alert-banner--error hidden" role="alert" style="background:transparent; color:var(--color-error); font-weight:600; border:none;">
-        Code expired.
-      </div>
-
       <form data-testid="login-otp-form" novalidate>
         <!-- 6-Box OTP Input -->
         <div data-testid="login-otp-group" class="otp-input" role="group" aria-label="6-digit verification code">
@@ -185,6 +175,23 @@
         </div>
         <button type="submit" class="visually-hidden" data-testid="login-otp-submit-btn">Verify code</button>
       </form>
+
+      <!-- Feedback Messages -->
+      <div data-testid="login-otp-error" class="feedback feedback--error hidden" role="alert">
+        <div class="feedback__icon">⚠️</div>
+        <div class="feedback__content">
+          Incorrect code. Please try again.
+          <span class="feedback__meta" data-testid="login-otp-error-message">You have 2 attempts left.</span>
+        </div>
+      </div>
+
+      <div data-testid="login-otp-expired" class="feedback feedback--error hidden" role="alert">
+        <div class="feedback__icon">⏳</div>
+        <div class="feedback__content">
+          This code has expired.
+          <span class="feedback__meta">Please request a new code.</span>
+        </div>
+      </div>
 
       <div class="text-center">
         <p class="mb-4 hidden" data-testid="login-otp-expired-timer-text" style="color:var(--color-primary); font-weight:600;">You can request a new code in 00:28</p>
