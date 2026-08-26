@@ -111,7 +111,6 @@ function safeEqual(left, right) {
 export async function testOtp(req, res, next) {
   try {
     if (
-      env.NODE_ENV === "production" ||
       !env.ENABLE_TEST_OTP ||
       !safeEqual(req.get("x-test-otp-key"), env.TEST_OTP_ACCESS_KEY)
     ) {
