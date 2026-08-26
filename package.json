@@ -29,6 +29,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
     "@prisma/adapter-neon": "^7.9.1",
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.9.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
@@ -37,6 +38,7 @@
     "express-rate-limit": "^8.6.2",
     "helmet": "^8.3.0",
     "otpauth": "^9.5.1",
+    "pg": "^8.23.0",
     "qrcode": "^1.5.4",
     "tsx": "^4.23.12",
     "ws": "^8.21.3",
