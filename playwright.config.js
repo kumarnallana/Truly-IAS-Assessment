@@ -25,9 +25,12 @@ export default defineConfig({
     },
   },
   webServer: {
-    command: "npm start",
+    // Launch Node directly so Playwright owns and terminates the actual server
+    // process on Windows instead of leaving a child behind an npm wrapper.
+    command: "node server/server.js",
+    env: { ...process.env, NODE_ENV: "test" },
     url: "http://localhost:4000",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 15000,
   },
   projects: [
