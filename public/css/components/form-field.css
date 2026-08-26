@@ -171,6 +171,11 @@
   color: var(--color-text-muted);
   margin-bottom: 1.5rem;
   cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.form-field__checkbox-label--error {
+  color: var(--color-error);
 }
 
 .form-field__checkbox-label input[type="checkbox"] {

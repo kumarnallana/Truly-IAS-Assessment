@@ -273,8 +273,8 @@ function validateRegForm(data) {
   } else if (!/[A-Z]/.test(data.password) || !/[0-9]/.test(data.password) || !/[^A-Za-z0-9]/.test(data.password)) {
     errors["reg-password"] = "Password must satisfy all complexity requirements.";
   }
-  if (!data.agreeTerms) {
-    errors["reg-terms"] = "You must agree to the Terms & Conditions.";
+  if (!data.termsAccepted) {
+    errors["reg-termsAccepted"] = "Please accept the Terms & Conditions and Privacy Policy to continue.";
   }
   return errors;
 }
@@ -285,7 +285,7 @@ if (regForm) {
   emailInput?.addEventListener("input", () => clearFieldError("reg-email"));
   mobileInput?.addEventListener("input", () => clearFieldError("reg-mobile"));
   passwordInput?.addEventListener("input", () => clearFieldError("reg-password"));
-  document.querySelector('[data-testid="reg-terms"]')?.addEventListener("change", () => clearFieldError("reg-terms"));
+  document.querySelector('[data-testid="reg-termsAccepted"]')?.addEventListener("change", () => clearFieldError("reg-termsAccepted"));
 
   regForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -294,7 +294,7 @@ if (regForm) {
       email: emailInput?.value || "",
       mobile: mobileInput?.value || "",
       password: passwordInput?.value || "",
-      agreeTerms: document.querySelector('[data-testid="reg-terms"]')?.checked || false,
+      termsAccepted: document.querySelector('[data-testid="reg-termsAccepted"]')?.checked || false,
     };
 
     const clientErrors = validateRegForm(formData);
@@ -315,6 +315,7 @@ if (regForm) {
           email: formData.email,
           phone: `${countryCodeInput?.value || ""}${formData.mobile.replace(/\D/g, "")}`,
           password: formData.password,
+          termsAccepted: formData.termsAccepted,
         },
       });
 

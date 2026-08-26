@@ -20,8 +20,9 @@ export function setFieldErrors(errors) {
     }
 
     if (inputEl) {
+      inputEl.setAttribute("aria-invalid", !!errorMessage);
+      
       if (inputEl.type !== "checkbox") {
-        inputEl.setAttribute("aria-invalid", !!errorMessage);
         inputEl.classList.toggle("form-field__input--error", !!errorMessage);
 
         // Specific handling for input groups (like mobile prefix)
@@ -29,12 +30,17 @@ export function setFieldErrors(errors) {
         if (group) {
           group.classList.toggle("form-field__group--error", !!errorMessage);
         }
-
-        // Auto-focus first error
-        if (errorMessage && !focused) {
-          inputEl.focus();
-          focused = true;
+      } else {
+        const label = inputEl.closest(".form-field__checkbox-label");
+        if (label) {
+          label.classList.toggle("form-field__checkbox-label--error", !!errorMessage);
         }
+      }
+      
+      // Focus first invalid field
+      if (errorMessage && !focused) {
+        inputEl.focus();
+        focused = true;
       }
     }
   });

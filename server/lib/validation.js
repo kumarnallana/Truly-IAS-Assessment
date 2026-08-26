@@ -12,6 +12,9 @@ export const registerSchema = z.object({
     .regex(/[^A-Za-z0-9]/, "Password must contain at least 1 special character."),
   confirmPassword: z.string().optional(),
   phone: z.string().trim().min(7, "Phone number is too short.").max(20),
+  termsAccepted: z.literal(true, {
+    errorMap: () => ({ message: "Terms and Privacy Policy acceptance is required." }),
+  }),
 }).refine((data) => !data.confirmPassword || data.password === data.confirmPassword, {
   path: ["confirmPassword"],
   message: "Passwords do not match.",
