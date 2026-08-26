@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/regression",
+  globalSetup: "./tests/global-setup.js",
   timeout: 30000,
   fullyParallel: false,
   workers: 1,
@@ -23,15 +24,6 @@ export default defineConfig({
       animations: "disabled", // Disable animations inside screenshot capture
       caret: "hide",          // Hide text caret
     },
-  },
-  webServer: {
-    // Launch Node directly so Playwright owns and terminates the actual server
-    // process on Windows instead of leaving a child behind an npm wrapper.
-    command: "node server/server.js",
-    env: { ...process.env, NODE_ENV: "test" },
-    url: "http://localhost:4000",
-    reuseExistingServer: false,
-    timeout: 15000,
   },
   projects: [
     // DESKTOP

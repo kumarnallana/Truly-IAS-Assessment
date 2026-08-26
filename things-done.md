@@ -7,7 +7,7 @@ Part 2 is complete. The login UI is connected to the Express/Prisma backend, MFA
 ## 1. Tech Stack & Environment
 
 - **Core Technologies**: Pure HTML5, CSS3 (Vanilla), and Vanilla JavaScript (ES6+). No heavy frameworks (like React or Vue) were used, keeping the application lightweight, fast, and highly customizable.
-- **Testing Framework**: Playwright (for both E2E Functional testing and Visual Regression testing).
+- **Testing Framework**: Playwright (for E2E functional, responsive, accessibility, security, and visual-regression testing). Its global setup owns the local Express server directly, preventing orphaned Windows test processes.
 - **Application Server**: Node.js/Express (running locally on port 4000 and serving both the API and static frontend).
 
 ## 2. Directory Structure
@@ -98,4 +98,4 @@ For engineers taking over the codebase:
 ### Integration Handoff
 1.  **Review the Tests**: Run `npx playwright test` to see the flows in action. The functional tests in `tests/regression/functional/` are the best documentation for how the state machine is intended to work.
 2.  **Component CSS**: When building new screens, heavily utilize the existing utility classes in `tokens.css` and the established block patterns in `auth-card.css`.
-3.  **Environment Setup**: Replace the placeholder database URL and secrets in `.env`, apply the Prisma schema, and run `npm start`. Production must use HTTPS, `COOKIE_SECURE=true`, and an independent `JWT_SECRET`.
+3.  **Environment Setup**: The ignored local `.env` is connected to Neon PostgreSQL, and the remote schema was verified in sync on 26 August 2026. For a fresh environment, copy `.env.example`, replace every placeholder, and apply the Prisma schema. Production must use HTTPS, `COOKIE_SECURE=true`, and an independent `JWT_SECRET`.

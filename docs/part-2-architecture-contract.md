@@ -107,7 +107,7 @@ In that mode the database stores an AES-256-GCM encrypted test copy, never plain
 
 Prisma models cover users, OTP challenges, pre-auth login transactions, server sessions, and JWT grants. A complete PostgreSQL migration is committed under `prisma/migrations` for a fresh database. For an existing schema originally created with `prisma db push`, baseline it before adopting migration history, or apply this additive schema with `npm run db:push` after taking a backup.
 
-Required production configuration is documented in `.env.example`. The checked-in `.env` currently contains a placeholder database URL and is not a deployable database configuration.
+Required production configuration is documented in `.env.example`. The ignored local `.env` is configured for Neon PostgreSQL, and `prisma db push` confirmed on 26 August 2026 that the remote schema is synchronized. Database credentials and other secrets remain untracked and must never be committed.
 
 ## Security references
 
@@ -115,4 +115,3 @@ Required production configuration is documented in `.env.example`. The checked-i
 - [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 - [OWASP CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
 - [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html)
-

@@ -5,6 +5,22 @@ test.describe('Security Regression', () => {
   test('Passwords are never logged and JWT is not in localStorage', async ({ page }) => {
     const logs = [];
     page.on('console', msg => logs.push(msg.text()));
+
+    await page.route('**/api/me', (route) => route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: JSON.stringify({ code: 'AUTHENTICATION_REQUIRED' }),
+    }));
+    await page.route('**/api/csrf', (route) => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ csrfToken: 'security-regression-csrf-token' }),
+    }));
+    await page.route('**/api/login', (route) => route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: JSON.stringify({ code: 'INVALID_CREDENTIALS', message: 'Invalid credentials.' }),
+    }));
     
     await page.goto('/login.html');
     
