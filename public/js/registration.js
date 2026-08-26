@@ -215,14 +215,13 @@ if (passwordInput) {
     };
 
     Object.entries(rules).forEach(([rule, valid]) => {
-      const el = document.querySelector(`[data-testid="rule-${rule}"]`);
-      if (el) {
+      document.querySelectorAll(`[data-password-rule="${rule}"]`).forEach((el) => {
         if (valid) {
           el.classList.add("password-rules__item--valid");
         } else {
           el.classList.remove("password-rules__item--valid");
         }
-      }
+      });
     });
   });
 }
@@ -269,6 +268,10 @@ function displayFieldErrors(errors) {
     }
     if (inputEl && inputEl.type !== "checkbox") {
       inputEl.setAttribute("aria-invalid", !!errors[field]);
+      inputEl.classList.toggle("form-field__input--error", !!errors[field]);
+      if (field === "mobile") {
+        inputEl.closest(".form-field__group")?.classList.toggle("form-field__group--error", !!errors[field]);
+      }
     }
   });
 }
@@ -314,7 +317,14 @@ if (regForm) {
       initEmailOtpScreen();
       showScreen("emailOtp");
     } catch (err) {
-      if (err.details) {
+      if (err.code === "ACCOUNT_EXISTS") {
+        displayFieldErrors({
+          email: err.details?.email || err.message,
+          form: "This account is already active. Use Login to continue.",
+        });
+        emailInput?.focus();
+        emailInput?.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (err.details && Object.keys(err.details).length > 0) {
         displayFieldErrors(err.details);
       } else {
         displayFieldErrors({ form: err.message });

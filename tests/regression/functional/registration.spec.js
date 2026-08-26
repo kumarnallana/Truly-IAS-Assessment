@@ -103,4 +103,51 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     await page.getByRole('button', { name: 'Create Account' }).click();
     await expect(page.getByTestId('error-password')).toBeVisible();
   });
+
+  test('Active duplicate email gives an actionable inline sign-in error', async ({ page }) => {
+    await page.route('**/api/register', async route => {
+      await route.fulfill({
+        status: 409,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          code: 'ACCOUNT_EXISTS',
+          message: 'An account with this email already exists. Sign in instead.',
+          details: { email: 'This email is already registered. Sign in instead.' },
+        }),
+      });
+    });
+
+    await page.goto('/index.html');
+    await page.getByTestId('reg-fullname').fill('Existing User');
+    await page.getByTestId('reg-email').fill('existing@example.com');
+    await page.getByTestId('reg-mobile').fill('9876543210');
+    await page.getByTestId('reg-password').fill('Password@123');
+    await page.getByTestId('reg-terms').check();
+    await page.getByRole('button', { name: 'Create Account' }).click();
+
+    await expect(page.getByTestId('error-email')).toContainText('already registered');
+    await expect(page.getByTestId('error-form')).toContainText('Use Login');
+    await expect(page.getByTestId('reg-email')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByRole('heading', { name: 'Create your account' })).toBeVisible();
+  });
+
+  test('Mobile password requirements stay beside the password before the terms and submit actions', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/index.html');
+    await page.getByTestId('reg-password').fill('Password@123');
+
+    const passwordBox = await page.getByTestId('reg-password').boundingBox();
+    const rulesBox = await page.getByTestId('password-rules-mobile').boundingBox();
+    const termsBox = await page.getByTestId('reg-terms').boundingBox();
+
+    expect(passwordBox).not.toBeNull();
+    expect(rulesBox).not.toBeNull();
+    expect(termsBox).not.toBeNull();
+    expect(rulesBox.y).toBeGreaterThan(passwordBox.y);
+    expect(rulesBox.y).toBeLessThan(termsBox.y);
+    await expect(page.getByTestId('rule-length-mobile')).toHaveClass(/password-rules__item--valid/);
+    await expect(page.getByTestId('rule-uppercase-mobile')).toHaveClass(/password-rules__item--valid/);
+    await expect(page.getByTestId('rule-number-mobile')).toHaveClass(/password-rules__item--valid/);
+    await expect(page.getByTestId('rule-special-mobile')).toHaveClass(/password-rules__item--valid/);
+  });
 });

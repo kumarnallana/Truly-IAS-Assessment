@@ -56,6 +56,10 @@
   border-color: var(--color-border-focus);
 }
 
+.form-field__group--error {
+  border-color: var(--color-error);
+}
+
 .form-field__prefix-select {
   padding: 0.75rem 0.5rem 0.75rem 1rem;
   color: var(--color-text-main);

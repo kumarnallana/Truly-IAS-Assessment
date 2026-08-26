@@ -28,6 +28,10 @@
   .auth-card__brand-panel {
     display: none !important;
   }
+
+  .auth-card__rules-column {
+    display: none;
+  }
 }
 
 /* Desktop Exact Structural Layouts */

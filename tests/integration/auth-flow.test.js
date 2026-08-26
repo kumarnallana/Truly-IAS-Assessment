@@ -75,12 +75,26 @@ test("registration, MFA, session, JWT, and logout work against PostgreSQL", { ti
     const email = `secureid.integration.${unique}@example.test`;
     const password = "SecureID!2026";
 
-    const registration = await request("/api/register", {
+    let registration = await request("/api/register", {
       method: "POST",
       expected: 201,
       body: { name: "Integration User", email, password, phone: "+91 98765 43210" },
     });
     userId = registration.userId;
+
+    const originalChallengeId = registration.challengeId;
+    registration = await request("/api/register", {
+      method: "POST",
+      expected: 200,
+      body: { name: "Integration User", email, password, phone: "+91 98765 43210" },
+    });
+    assert.equal(registration.resumed, true);
+    assert.equal(registration.userId, userId);
+    assert.notEqual(registration.challengeId, originalChallengeId);
+    await request(`/api/test/otp/${originalChallengeId}`, {
+      expected: 404,
+      headers: { "x-test-otp-key": process.env.TEST_OTP_ACCESS_KEY },
+    });
 
     const emailOtp = await readOtp(registration.challengeId);
     await request("/api/verify-email-otp", {
@@ -154,6 +168,14 @@ test("registration, MFA, session, JWT, and logout work against PostgreSQL", { ti
       expected: 401,
       headers: { authorization: `Bearer ${issued.accessToken}` },
     });
+
+    const duplicateActive = await request("/api/register", {
+      method: "POST",
+      expected: 409,
+      body: { name: "Integration User", email, password, phone: "+91 98765 43210" },
+    });
+    assert.equal(duplicateActive.code, "ACCOUNT_EXISTS");
+    assert.match(duplicateActive.details.email, /sign in/i);
   } finally {
     if (userId) {
       await prisma.user.deleteMany({ where: { id: userId } });
