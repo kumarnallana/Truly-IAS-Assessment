@@ -112,19 +112,27 @@
 .form-field__icon-wrapper .form-field__input,
 .form-field__icon-wrapper.form-field__password-wrapper .form-field__input {
   padding-left: 2.75rem;
+  padding-right: 2.75rem; /* Prevent text overlap with eye icon */
 }
 
 .form-field__password-toggle {
   position: absolute;
-  right: 1rem;
+  right: 0.5rem; /* adjusted for the larger padding */
   background: none;
   border: none;
   color: var(--color-text-muted);
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 0.5rem; /* larger touch target */
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+
+.form-field__password-toggle:hover {
+  background-color: var(--color-bg-page);
+  color: var(--color-text-main);
 }
 
 /* Checkbox Label */

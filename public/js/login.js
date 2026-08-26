@@ -309,10 +309,22 @@ document.querySelector('[data-testid="toggle-login-password-btn"]')?.addEventLis
   passwordInput.type = reveal ? "text" : "password";
   event.currentTarget.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
 });
-document.querySelector('[data-testid="login-method-back-btn"]')?.addEventListener("click", () => showScreen("login-screen"));
-document.querySelector('[data-testid="login-otp-back-btn"]')?.addEventListener("click", () => {
-  stopTimers();
-  showScreen("login-mfa-choice-screen");
+
+// Global Back Button Handler for Login Flow
+document.addEventListener("click", (event) => {
+  const backBtn = event.target.closest(".btn--back");
+  if (!backBtn) return;
+  
+  const activeScreen = document.querySelector('.screen[data-active="true"]');
+  if (!activeScreen) return;
+  
+  const screenId = activeScreen.getAttribute("data-testid");
+  if (screenId === "login-mfa-choice-screen") {
+    showScreen("login-screen");
+  } else if (screenId === "login-otp-screen") {
+    stopTimers();
+    showScreen("login-mfa-choice-screen");
+  }
 });
 
 function showScopeNotice(message) {

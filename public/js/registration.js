@@ -601,7 +601,6 @@ if (mfaChoiceForm) {
 // 5. Authenticator Setup Screen (Screen 5)
 // --------------------------------------------------------------------------
 const authSetupContinueBtn = document.querySelector('[data-testid="auth-setup-continue-btn"]');
-const authSetupBackBtn = document.querySelector('[data-testid="auth-setup-back-btn"]');
 const toggleManualKeyBtn = document.querySelector('[data-testid="toggle-manual-key-btn"]');
 const manualKeyContainer = document.querySelector('[data-testid="manual-key-container"]');
 
@@ -613,11 +612,28 @@ if (toggleManualKeyBtn && manualKeyContainer) {
   });
 }
 
-if (authSetupBackBtn) {
-  authSetupBackBtn.addEventListener("click", () => {
+// Global Back Button Handler for Registration Flow
+document.addEventListener("click", (event) => {
+  const backBtn = event.target.closest(".btn--back");
+  if (!backBtn) return;
+  
+  const activeScreen = document.querySelector('.screen[data-active="true"]');
+  if (!activeScreen) return;
+  
+  const screenId = activeScreen.getAttribute("data-testid");
+  
+  // Determine previous screen based on state machine
+  if (screenId === "authenticator-setup-screen") {
     showScreen("mfaChoice");
-  });
-}
+  } else if (screenId === "mfa-verify-screen") {
+    showScreen("mfaChoice");
+  } else if (screenId === "mfa-choice-screen") {
+    // Typically shouldn't go back from here as account is verified, but if needed:
+    // showScreen("registration");
+  } else if (screenId === "sms-otp-screen" || screenId === "email-otp-screen") {
+    // showScreen("registration"); 
+  }
+});
 
 if (authSetupContinueBtn) {
   authSetupContinueBtn.addEventListener("click", () => {

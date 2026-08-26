@@ -87,18 +87,21 @@
 .btn--back {
   background: none;
   border: none;
-  font-size: 1.25rem;
-  color: var(--color-text);
+  font-size: 1.5rem; /* ~24px icon size */
+  color: var(--color-text-main);
   cursor: pointer;
-  padding: 0.5rem;
-  margin-left: -0.5rem; /* Optical alignment */
+  padding: 0.75rem; /* Larger touch target */
+  margin-left: -0.75rem; /* Optical alignment */
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  transition: opacity 150ms ease, background-color 150ms ease;
 }
 
 .btn--back:hover {
-  opacity: 0.8;
+  opacity: 1;
+  background-color: var(--color-bg-page);
 }
 
 /* Utilities */
