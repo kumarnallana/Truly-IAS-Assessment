@@ -1,4 +1,5 @@
 import { apiRequest } from "./api.js";
+import { setFieldErrors, clearFieldError, clearAllFieldErrors } from "./validation.js";
 
 const state = {
   loginToken: null,
@@ -49,14 +50,14 @@ function setButtonLoading(button, loading, idleLabel, loadingLabel) {
   button.textContent = loading ? loadingLabel : idleLabel;
 }
 
-function setLoginError(message = "") {
-  const visible = Boolean(message);
-  loginError.textContent = message;
-  loginError.classList.toggle("hidden", !visible);
-  emailInput.classList.toggle("input--error", visible);
-  passwordInput.classList.toggle("input--error", visible);
-  emailInput.setAttribute("aria-invalid", String(visible));
-  passwordInput.setAttribute("aria-invalid", String(visible));
+function setLoginError(message) {
+  if (message) {
+    const contentEl = loginError.querySelector(".feedback__content");
+    if (contentEl) contentEl.textContent = message;
+    loginError.classList.remove("hidden");
+  } else {
+    loginError.classList.add("hidden");
+  }
 }
 
 function clearOtpState({ clearInputs = false } = {}) {
@@ -192,10 +193,19 @@ function renderOtpScreen(challenge) {
 async function submitLogin() {
   const identifier = emailInput.value.trim();
   const password = passwordInput.value;
-  if (!identifier || !password) {
-    setLoginError("Enter your email and password.");
+  
+  // Field-level validation
+  const errors = {};
+  if (!identifier) errors["login-email"] = "Email or username is required.";
+  if (!password) errors["login-password"] = "Password is required.";
+  
+  if (Object.keys(errors).length > 0) {
+    setFieldErrors(errors);
+    setLoginError(); // Clear screen-level error
     return;
   }
+
+  setFieldErrors({ "login-email": null, "login-password": null });
   setLoginError();
   setButtonLoading(loginButton, true, "Login", "Signing in...");
   try {
@@ -299,6 +309,9 @@ async function resendCode() {
 loginForm?.addEventListener("submit", (event) => { event.preventDefault(); submitLogin(); });
 methodForm?.addEventListener("submit", (event) => { event.preventDefault(); createChallenge(); });
 otpForm?.addEventListener("submit", (event) => { event.preventDefault(); verifyCode(); });
+
+emailInput?.addEventListener("input", () => clearFieldError("login-email"));
+passwordInput?.addEventListener("input", () => clearFieldError("login-password"));
 
 document.querySelectorAll('input[name="login-mfa-method"]').forEach((radio) => {
   radio.addEventListener("change", updateSelectedMethodCard);

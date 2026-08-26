@@ -1,4 +1,5 @@
 import { apiRequest } from "./api.js";
+import { setFieldErrors, clearFieldError, clearAllFieldErrors } from "./validation.js";
 import { selectMfaMethod, verifyMfaCode } from "./mfa.js";
 
 /**
@@ -266,48 +267,33 @@ if (togglePasswordBtn && passwordInput) {
 function validateRegForm(data) {
   const errors = {};
   if (!data.fullname.trim() || data.fullname.trim().length < 2) {
-    errors.fullname = "Full name must be at least 2 characters.";
+    errors["reg-fullname"] = "Full name must be at least 2 characters.";
   }
   if (!data.email.trim() || !/^\S+@\S+\.\S+$/.test(data.email)) {
-    errors.email = "Please enter a valid email address.";
+    errors["reg-email"] = "Please enter a valid email address.";
   }
   if (!data.mobile.trim() || data.mobile.trim().length < 7) {
-    errors.mobile = "Please enter a valid mobile number.";
+    errors["reg-mobile"] = "Please enter a valid mobile number.";
   }
   if (data.password.length < 8) {
-    errors.password = "Password must be at least 8 characters.";
+    errors["reg-password"] = "Password must be at least 8 characters.";
   } else if (!/[A-Z]/.test(data.password) || !/[0-9]/.test(data.password) || !/[^A-Za-z0-9]/.test(data.password)) {
-    errors.password = "Password must satisfy all complexity requirements.";
+    errors["reg-password"] = "Password must satisfy all complexity requirements.";
   }
   if (!data.agreeTerms) {
-    errors.agreeTerms = "You must agree to the Terms & Conditions.";
+    errors["reg-terms"] = "You must agree to the Terms & Conditions.";
   }
   return errors;
 }
 
-function displayFieldErrors(errors) {
-  ["fullname", "email", "mobile", "password", "agreeTerms", "form"].forEach((field) => {
-    const errSpan = document.querySelector(`[data-testid="error-${field}"]`);
-    const inputEl = document.querySelector(`[data-testid="reg-${field}"]`);
-    if (errSpan) {
-      if (field === "form") {
-        showFeedback(errSpan, "error", errors[field] || "");
-      } else {
-        errSpan.textContent = errors[field] || "";
-        errSpan.style.display = errors[field] ? "block" : "none";
-      }
-    }
-    if (inputEl && inputEl.type !== "checkbox") {
-      inputEl.setAttribute("aria-invalid", !!errors[field]);
-      inputEl.classList.toggle("form-field__input--error", !!errors[field]);
-      if (field === "mobile") {
-        inputEl.closest(".form-field__group")?.classList.toggle("form-field__group--error", !!errors[field]);
-      }
-    }
-  });
-}
-
 if (regForm) {
+  // Clear errors on input
+  fullnameInput?.addEventListener("input", () => clearFieldError("reg-fullname"));
+  emailInput?.addEventListener("input", () => clearFieldError("reg-email"));
+  mobileInput?.addEventListener("input", () => clearFieldError("reg-mobile"));
+  passwordInput?.addEventListener("input", () => clearFieldError("reg-password"));
+  document.querySelector('[data-testid="reg-terms"]')?.addEventListener("change", () => clearFieldError("reg-terms"));
+
   regForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = {
@@ -319,11 +305,14 @@ if (regForm) {
     };
 
     const clientErrors = validateRegForm(formData);
-    displayFieldErrors(clientErrors);
+    setFieldErrors(clientErrors);
     if (Object.keys(clientErrors).length > 0) return;
 
     regSubmitBtn.disabled = true;
     regSubmitBtn.textContent = "Creating account...";
+    
+    const formErrorSpan = document.querySelector('[data-testid="error-form"]');
+    showFeedback(formErrorSpan, null);
 
     try {
       const response = await apiRequest("/register", {
@@ -348,17 +337,22 @@ if (regForm) {
       initEmailOtpScreen();
       showScreen("emailOtp");
     } catch (err) {
+      const formErrorSpan = document.querySelector('[data-testid="error-form"]');
       if (err.code === "ACCOUNT_EXISTS") {
-        displayFieldErrors({
-          email: err.details?.email || err.message,
-          form: "This account is already active. Use Login to continue.",
-        });
+        setFieldErrors({ "reg-email": err.details?.email || err.message });
+        showFeedback(formErrorSpan, "error", "This account is already active. Use Login to continue.");
         emailInput?.focus();
         emailInput?.scrollIntoView({ behavior: "smooth", block: "center" });
       } else if (err.details && Object.keys(err.details).length > 0) {
-        displayFieldErrors(err.details);
+        // Map backend field errors to reg-* keys
+        const mappedErrors = {};
+        if (err.details.email) mappedErrors["reg-email"] = err.details.email;
+        if (err.details.password) mappedErrors["reg-password"] = err.details.password;
+        if (err.details.name) mappedErrors["reg-fullname"] = err.details.name;
+        if (err.details.phone) mappedErrors["reg-mobile"] = err.details.phone;
+        setFieldErrors(mappedErrors);
       } else {
-        displayFieldErrors({ form: err.message });
+        showFeedback(formErrorSpan, "error", err.message);
       }
     } finally {
       regSubmitBtn.disabled = false;

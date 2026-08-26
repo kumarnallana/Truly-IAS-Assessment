@@ -40,12 +40,18 @@
   color: var(--color-error);
   font-size: 0.8125rem;
   margin-top: 0.5rem;
-  animation: slideFadeIn 150ms ease forwards;
+  animation: slideFadeIn 160ms ease forwards;
 }
 
 @keyframes slideFadeIn {
-  from { opacity: 0; transform: translateY(2px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-field__error-text {
+    animation: none;
+  }
 }
 
 /* Phone Input Group (with +91 prefix) */

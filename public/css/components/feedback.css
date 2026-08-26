@@ -11,13 +11,20 @@
   font-size: 0.875rem;
   line-height: 1.4;
   margin-bottom: 1.5rem;
-  transition: all 150ms ease;
-  animation: feedbackSlideIn 150ms ease forwards;
+  transition: all 160ms ease;
+  animation: feedbackEntrance 180ms ease forwards;
 }
 
-@keyframes feedbackSlideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes feedbackEntrance {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback {
+    animation: none;
+    transition: none;
+  }
 }
 
 .feedback__icon {
