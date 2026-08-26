@@ -11,6 +11,7 @@
     "db:push": "prisma db push",
     "test": "playwright test",
     "test:unit": "node --test tests/unit/*.test.js",
+    "test:integration": "node --test tests/integration/*.test.js",
     "test:functional": "playwright test tests/regression/functional tests/regression/security"
   },
   "repository": {
