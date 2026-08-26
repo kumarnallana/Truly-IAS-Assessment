@@ -71,23 +71,18 @@ function updateStepper(step) {
     const line = document.querySelector(`[data-testid="step-line-${i}"]`);
     if (!dot) continue;
 
-    dot.classList.remove("active", "completed");
+    dot.classList.remove("auth-stepper__dot--active", "auth-stepper__dot--completed");
     if (i < step) {
-      dot.classList.add("completed");
+      dot.classList.add("auth-stepper__dot--completed");
       dot.innerHTML = "✓";
+      if (line) line.classList.add("auth-stepper__line--completed");
     } else if (i === step) {
-      dot.classList.add("active");
-      dot.textContent = i;
+      dot.classList.add("auth-stepper__dot--active");
+      dot.innerHTML = i;
+      if (line) line.classList.remove("auth-stepper__line--completed");
     } else {
-      dot.textContent = i;
-    }
-
-    if (line) {
-      if (i < step) {
-        line.classList.add("completed");
-      } else {
-        line.classList.remove("completed");
-      }
+      dot.innerHTML = i;
+      if (line) line.classList.remove("auth-stepper__line--completed");
     }
   }
 }

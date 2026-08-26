@@ -38,8 +38,26 @@
   color: white;
 }
 
+.auth-stepper__dot--completed {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  animation: stepperComplete 200ms ease forwards;
+}
+
+@keyframes stepperComplete {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
 .auth-stepper__line {
   height: 2px;
   width: 24px;
   background: var(--color-border);
+  transition: background 200ms ease;
+}
+
+.auth-stepper__line--completed {
+  background: var(--color-primary);
 }
