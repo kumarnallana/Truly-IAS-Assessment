@@ -14,3 +14,14 @@ myenv/
 venv/
 .venv/
 __pycache__/
+
+# Scratch and reference files
+*.cjs
+things-done.md
+walkthrough-update.md
+phase4-verification.md
+dom-measurements.json
+measure.py
+measure_dom.js
+scratch-test.js
+debug-registration.png
