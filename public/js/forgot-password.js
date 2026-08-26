@@ -1,6 +1,62 @@
 import { apiRequest } from "./api.js";
 import { setFieldErrors, clearFieldError, checkPasswordStrength } from "./validation.js";
-import { setupOtpInputs } from "./otp.js";
+
+function setupOtpInputs(containerId, onComplete) {
+  const container = typeof containerId === 'string' ? (document.getElementById(containerId) || document.querySelector(`[data-testid="${containerId}"]`)) : containerId;
+  if (!container) return { getOtp: () => "", clear: () => {}, setInvalid: () => {} };
+
+  const inputs = Array.from(container.querySelectorAll("input"));
+
+  inputs.forEach((input, index) => {
+    input.addEventListener("input", (e) => {
+      const val = e.target.value.replace(/\D/g, "");
+      e.target.value = val ? val[val.length - 1] : "";
+
+      inputs.forEach((i) => i.classList.remove("otp-input__box--error"));
+
+      if (e.target.value && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+
+      const fullCode = inputs.map((i) => i.value).join("");
+      if (fullCode.length === 6 && onComplete) {
+        onComplete(fullCode);
+      }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0) {
+        inputs[index - 1].focus();
+      } else if (e.key === "ArrowLeft" && index > 0) {
+        inputs[index - 1].focus();
+      } else if (e.key === "ArrowRight" && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+    });
+
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const pasteData = (e.clipboardData || window.clipboardData).getData("text").trim();
+      const digits = pasteData.replace(/\D/g, "").slice(0, 6);
+      digits.split("").forEach((digit, i) => {
+        if (inputs[i]) inputs[i].value = digit;
+      });
+      const nextIndex = Math.min(digits.length, inputs.length - 1);
+      inputs[nextIndex]?.focus();
+
+      const fullCode = inputs.map((i) => i.value).join("");
+      if (fullCode.length === 6 && onComplete) {
+        onComplete(fullCode);
+      }
+    });
+  });
+
+  return {
+    getOtp: () => inputs.map((i) => i.value).join(""),
+    clear: () => inputs.forEach((i) => (i.value = "")),
+    setInvalid: (isInvalid) => inputs.forEach((i) => i.classList.toggle("otp-input__box--error", isInvalid)),
+  };
+}
 
 const state = {
   currentScreen: "fp-email-screen",
@@ -78,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmPasswordInput = document.getElementById("fp-confirm-password");
   const reqList = document.getElementById("fp-password-requirements");
 
-  const backToLoginBtn = document.querySelector('[data-testid="fp-back-to-login"]');
   const backToEmailBtn = document.querySelector('[data-testid="fp-reset-back-btn"]');
 
   // Setup OTP inputs
@@ -106,12 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
   confirmPasswordInput?.addEventListener("input", () => clearFieldError("fp-confirm"));
 
   // Navigation
-  if (backToLoginBtn) {
-    backToLoginBtn.addEventListener("click", () => {
-      window.location.assign("/login.html");
-    });
-  }
-
   if (backToEmailBtn) {
     backToEmailBtn.addEventListener("click", () => {
       stopTimer();
@@ -180,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
       clearFieldError("fp-confirm");
       if (resetErrorBanner) resetErrorBanner.classList.add("hidden");
 
-      const otp = otpInputs.getValue();
+      const otp = otpInputs.getOtp();
       const newPassword = newPasswordInput.value;
       const confirmPassword = confirmPasswordInput.value;
 
