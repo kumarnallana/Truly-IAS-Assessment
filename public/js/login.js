@@ -323,6 +323,9 @@ function showScopeNotice(message) {
 document.querySelector('[data-testid="forgot-password-link"]')?.addEventListener("click", () => {
   showScopeNotice("Password recovery is outside this assessment's required backend scope.");
 });
+document.querySelector('[data-testid="login-google-btn"]')?.addEventListener("click", () => {
+  showScopeNotice("Google sign-in is a reference-only control and is not enabled for this first-party SecureID assessment.");
+});
 
 otpInputs.forEach((input, index) => {
   input.addEventListener("input", (event) => {
