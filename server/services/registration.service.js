@@ -28,14 +28,43 @@ async function createChallenge({ userId, channel, purpose, otp, db = prisma }) {
   });
 }
 
+async function resetPendingUser({ user, name, passwordHash, phone }) {
+  const invalidatedAt = new Date();
+  const userId = user.id;
+
+  await prisma.accessToken.updateMany({ where: { userId, revokedAt: null }, data: { revokedAt: invalidatedAt } });
+  await prisma.session.updateMany({ where: { userId, revokedAt: null }, data: { revokedAt: invalidatedAt } });
+  await prisma.loginTransaction.updateMany({ where: { userId, consumedAt: null }, data: { consumedAt: invalidatedAt } });
+  await prisma.otpChallenge.updateMany({ where: { userId, consumedAt: null }, data: { consumedAt: invalidatedAt } });
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      name: name.trim(),
+      passwordHash,
+      phone: phone.trim(),
+      status: "PENDING",
+      emailVerified: false,
+      phoneVerified: false,
+      mfaEnabled: false,
+      mfaMethod: null,
+      totpSecretEncrypted: null,
+      lastTotpCounter: null,
+      failedLoginAttempts: 0,
+      lockedUntil: null,
+      lastLoginAt: null,
+    },
+  });
+}
+
 export async function registerUser({ name, email, password, phone }) {
   const normalizedEmail = email.trim().toLowerCase();
   const passwordHash = await bcrypt.hash(password, 12);
   const otp = generateOtp();
-  let result;
+  let existing;
 
   try {
-    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
     if (existing?.status === "ACTIVE") {
       throw fail(
@@ -47,78 +76,52 @@ export async function registerUser({ name, email, password, phone }) {
     }
 
     const userId = existing?.id || crypto.randomUUID();
-    const challengeId = crypto.randomUUID();
-    const challengeData = {
-      id: challengeId,
-      userId,
-      channel: "EMAIL",
-      purpose: "REGISTRATION_EMAIL",
-      otpHash: hashOtp(otp, env.OTP_SECRET),
-      testOtpEncrypted: protectTestOtp(otp),
-      expiresAt: challengeExpiry(),
-      maxAttempts: env.OTP_MAX_ATTEMPTS,
-    };
+    let user;
 
     if (existing) {
       // A PENDING account is an interrupted registration, not a permanent
-      // conflict. Restart it from email verification and invalidate every
-      // stale challenge/transaction so the browser cannot enter a dead end.
-      const transactionResults = await prisma.$transaction([
-        prisma.accessToken.deleteMany({ where: { userId } }),
-        prisma.session.deleteMany({ where: { userId } }),
-        prisma.loginTransaction.deleteMany({ where: { userId } }),
-        prisma.otpChallenge.deleteMany({ where: { userId } }),
-        prisma.user.update({
-          where: { id: existing.id },
-          data: {
-            name: name.trim(),
-            passwordHash,
-            phone: phone.trim(),
-            status: "PENDING",
-            emailVerified: false,
-            phoneVerified: false,
-            mfaEnabled: false,
-            mfaMethod: null,
-            totpSecretEncrypted: null,
-            lastTotpCounter: null,
-            failedLoginAttempts: 0,
-            lockedUntil: null,
-            lastLoginAt: null,
-          },
-        }),
-        prisma.otpChallenge.create({ data: challengeData }),
-      ]);
-      result = { user: transactionResults[4], challenge: transactionResults[5], resumed: true };
+      // conflict. These writes are deliberately idempotent and avoid Prisma's
+      // multi-operation transaction API, which can time out through the Neon
+      // serverless adapter. If a connection drops midway, the next submission
+      // safely repeats the reset and creates a fresh challenge.
+      user = await resetPendingUser({ user: existing, name, passwordHash, phone });
     } else {
-      const [user, challenge] = await prisma.$transaction([
-        prisma.user.create({
-          data: { id: userId, name: name.trim(), email: normalizedEmail, passwordHash, phone: phone.trim(), status: "PENDING" },
-        }),
-        prisma.otpChallenge.create({ data: challengeData }),
-      ]);
-      result = { user, challenge, resumed: false };
+      user = await prisma.user.create({
+        data: { id: userId, name: name.trim(), email: normalizedEmail, passwordHash, phone: phone.trim(), status: "PENDING" },
+      });
     }
+
+    const challenge = await createChallenge({ userId: user.id, channel: "EMAIL", purpose: "REGISTRATION_EMAIL", otp });
+    await sendEmailOtp({ email: user.email, otp });
+
+    return {
+      userId: user.id,
+      challengeId: challenge.id,
+      channel: "email",
+      expiresAt: challenge.expiresAt,
+      resumed: Boolean(existing),
+    };
   } catch (error) {
     if (error?.code === "P2002") {
-      throw fail(
-        "An account with this email already exists. Sign in instead.",
-        409,
-        "ACCOUNT_EXISTS",
-        { email: "This email is already registered. Sign in instead." },
-      );
+      const concurrent = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+      if (concurrent?.status === "PENDING") {
+        const user = await resetPendingUser({ user: concurrent, name, passwordHash, phone });
+        const challenge = await createChallenge({ userId: user.id, channel: "EMAIL", purpose: "REGISTRATION_EMAIL", otp });
+        await sendEmailOtp({ email: user.email, otp });
+        return {
+          userId: user.id,
+          challengeId: challenge.id,
+          channel: "email",
+          expiresAt: challenge.expiresAt,
+          resumed: true,
+        };
+      }
+      throw fail("An account with this email already exists. Sign in instead.", 409, "ACCOUNT_EXISTS", {
+        email: "This email is already registered. Sign in instead.",
+      });
     }
     throw error;
   }
-
-  await sendEmailOtp({ email: result.user.email, otp });
-
-  return {
-    userId: result.user.id,
-    challengeId: result.challenge.id,
-    channel: "email",
-    expiresAt: result.challenge.expiresAt,
-    resumed: result.resumed,
-  };
 }
 
 async function verifyChallenge({ userId, challengeId, otp, channel, purpose }) {

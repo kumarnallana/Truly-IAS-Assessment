@@ -137,13 +137,15 @@
             </div>
 
             <!-- Terms Checkbox -->
-            <label class="form-field__checkbox-label">
-              <input type="checkbox" data-testid="reg-terms" required>
-              <span>
-                I agree to the <a href="#" data-testid="terms-link">Terms & Conditions</a> and <a href="#" data-testid="privacy-link">Privacy Policy</a>
-              </span>
-            </label>
-            <span data-testid="error-agreeTerms" class="form-field__error-text mb-6" style="display: none; margin-top:-1rem;"></span>
+            <div class="registration-form__terms">
+              <label class="form-field__checkbox-label">
+                <input type="checkbox" data-testid="reg-terms" required>
+                <span>
+                  I agree to the <a href="#" data-testid="terms-link">Terms & Conditions</a> and <a href="#" data-testid="privacy-link">Privacy Policy</a>
+                </span>
+              </label>
+              <span data-testid="error-agreeTerms" class="form-field__error-text mb-6" style="display: none;"></span>
+            </div>
 
             <!-- Submit Button -->
             <button type="submit" data-testid="reg-submit-btn" class="btn btn--primary" style="width: 100%;">Create Account</button>

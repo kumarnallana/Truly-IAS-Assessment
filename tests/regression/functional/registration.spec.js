@@ -151,4 +151,40 @@ test.describe('Registration UI Corrections & Smoke Test', () => {
     await expect(page.getByTestId('rule-number')).toHaveClass(/password-rules__item--valid/);
     await expect(page.getByTestId('rule-special')).toHaveClass(/password-rules__item--valid/);
   });
+
+  test('Desktop requirements panel spans the identity fields while actions remain in the left column', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/index.html');
+
+    const layout = await page.evaluate(() => {
+      const rect = (element) => {
+        const box = element.getBoundingClientRect();
+        return { top: box.top, bottom: box.bottom, left: box.left, right: box.right, width: box.width, height: box.height };
+      };
+      const nameField = document.querySelector('[data-testid="reg-fullname"]').closest('.form-field');
+      const mobileField = document.querySelector('[data-testid="reg-mobile"]').closest('.form-field');
+      const passwordField = document.querySelector('[data-testid="reg-password"]').closest('.form-field');
+      const rules = document.querySelector('[data-testid="password-rules"]');
+      const terms = document.querySelector('.registration-form__terms');
+      const submit = document.querySelector('[data-testid="reg-submit-btn"]');
+      return {
+        name: rect(nameField),
+        mobile: rect(mobileField),
+        password: rect(passwordField),
+        rules: rect(rules),
+        terms: rect(terms),
+        submit: rect(submit),
+        rulesBackground: getComputedStyle(rules).backgroundColor,
+      };
+    });
+
+    expect(Math.abs(layout.rules.top - layout.name.top)).toBeLessThan(2);
+    // The mobile field's 20px bottom margin is deliberate spacing; the panel
+    // itself ends with the identity-field block before the password row.
+    expect(Math.abs(layout.rules.bottom - layout.mobile.bottom)).toBeLessThanOrEqual(20);
+    expect(Math.abs(layout.terms.left - layout.password.left)).toBeLessThan(2);
+    expect(layout.terms.top).toBeGreaterThanOrEqual(layout.password.bottom - 20);
+    expect(Math.abs(layout.submit.width - layout.password.width)).toBeLessThan(2);
+    expect(layout.rulesBackground).not.toBe('rgba(0, 0, 0, 0)');
+  });
 });

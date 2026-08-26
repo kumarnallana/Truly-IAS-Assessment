@@ -59,9 +59,8 @@
 
   .registration-form > .password-rules {
     grid-column: 2;
-    grid-row: 1 / span 8;
-    align-self: start;
-    margin-top: 260px;
+    grid-row: 1 / span 3;
+    align-self: stretch;
   }
 
   .auth-card__top-bar {
