@@ -345,29 +345,6 @@ otpInputs.forEach((input, index) => {
   });
 });
 
-document.querySelectorAll(".mobile-keypad__btn").forEach((button) => {
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
-    const key = button.dataset.key;
-    if (key === "blank") return;
-    if (key === "backspace") {
-      for (let index = otpInputs.length - 1; index >= 0; index -= 1) {
-        if (otpInputs[index].value) {
-          otpInputs[index].value = "";
-          otpInputs[index].focus();
-          clearOtpState();
-          return;
-        }
-      }
-      return;
-    }
-    const target = otpInputs.find((input) => !input.value);
-    if (!target) return;
-    target.value = key;
-    target.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-});
-
 resendLink?.addEventListener("click", resendCode);
 resendButton?.addEventListener("click", resendCode);
 

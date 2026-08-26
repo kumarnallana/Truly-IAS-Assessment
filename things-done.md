@@ -32,13 +32,13 @@ Instead of relying on hardcoded CSS or a heavy CSS framework, the project was bu
     *   `auth-card.css`: Manages the responsive grid and panel layouts.
     *   `form-field.css`: Standardized inputs, labels, floating error messages, and checkboxes.
     *   `buttons.css`: Centralized primary, secondary, link, and back-button styles.
-    *   `otp-input.css` & `mobile-keypad.css`: Specialized styles for the OTP verification interfaces.
+    *   `otp-input.css`: Specialized styles for the OTP verification interfaces.
 
 ## 2. Responsive Strategy & Breakpoints
 
 The application enforces a strict, tested responsive behavior matrix to ensure the UI does not tear or clip across devices.
 
-*   **Mobile (320px - 767px)**: Stacked, single-column block flow. Specialized mobile UI elements like the on-screen OTP Keypad and the `←` Back Button replace desktop panels.
+*   **Mobile (320px - 767px)**: Stacked, single-column block flow. OTP fields use `inputmode="numeric"` and `autocomplete="one-time-code"` so the device can provide its native numeric keyboard; the website does not render a keypad. The `←` Back Button replaces desktop navigation.
 *   **Tablet (768px - 1023px)**: A safe interpolation zone. The UI maintains the stacked mobile structure but expands bounds gracefully without forcing a compressed desktop grid.
 *   **Desktop (1024px+)**: True 2-column layouts activate. The Login screen reveals its 40/60 branded side-panel, and the Registration screen splits into a grid separating form fields from password requirements.
 
@@ -59,8 +59,8 @@ A complete, 7-step client-side state machine was implemented for the Registratio
 A backend-integrated login architecture:
 1.  **Default & Invalid States**: Standard email/password authentication with error handling.
 2.  **MFA Method Selection**: Choosing between Email, SMS, or Authenticator App.
-3.  **OTP Verification (Email/SMS)**: 
-    *   Includes a specialized **Mobile OTP Keypad** designed specifically for touch devices, which synchronizes with the native hidden numeric input to preserve native form submission and password-manager autofill compatibility.
+3.  **OTP Verification (Email/SMS)**:
+    *   Uses accessible six-box numeric inputs with native mobile-keyboard and one-time-code autofill hints. No application-rendered keypad is included.
 4.  **Error & Expired States**: Full handling of wrong codes and timeout expirations.
 5.  **Server Session**: Fresh opaque, hashed-at-rest session material is created only after MFA; Remember Me extends only server-session lifetime.
 6.  **JWT Demonstration**: The authenticated dashboard exchanges its session for a short-lived, audience-restricted JWT held only in page memory.
