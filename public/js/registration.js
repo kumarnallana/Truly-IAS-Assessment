@@ -366,7 +366,12 @@ function initEmailOtpScreen() {
 
 async function handleEmailOtpVerify() {
   const otp = emailOtpInputs.getOtp();
-  if (otp.length !== 6) return;
+  if (otp.length !== 6) {
+    emailErrorBanner.className = "alert-banner error";
+    emailErrorBanner.textContent = "Please enter the complete 6-digit code.";
+    emailErrorBanner.style.display = "flex";
+    return;
+  }
 
   emailVerifyBtn.disabled = true;
   emailVerifyBtn.textContent = "Verifying...";
@@ -463,7 +468,12 @@ function initSmsOtpScreen() {
 
 async function handleSmsOtpVerify() {
   const otp = smsOtpInputs.getOtp();
-  if (otp.length !== 6) return;
+  if (otp.length !== 6) {
+    smsErrorBanner.className = "alert-banner error";
+    smsErrorBanner.textContent = "Please enter the complete 6-digit code.";
+    smsErrorBanner.style.display = "flex";
+    return;
+  }
 
   smsVerifyBtn.disabled = true;
   smsVerifyBtn.textContent = "Verifying...";
@@ -625,7 +635,12 @@ function initMfaVerifyScreen(method) {
 
 async function handleMfaVerify() {
   const code = mfaOtpInputs.getOtp();
-  if (code.length !== 6) return;
+  if (code.length !== 6) {
+    mfaErrorBanner.className = "alert-banner error";
+    mfaErrorBanner.textContent = "Please enter the complete 6-digit code.";
+    mfaErrorBanner.style.display = "flex";
+    return;
+  }
 
   mfaVerifySubmitBtn.disabled = true;
   mfaVerifySubmitBtn.textContent = "Verifying...";

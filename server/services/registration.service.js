@@ -126,16 +126,16 @@ export async function registerUser({ name, email, password, phone }) {
 
 async function verifyChallenge({ userId, challengeId, otp, channel, purpose }) {
   const challenge = await prisma.otpChallenge.findFirst({ where: { id: challengeId, userId, channel, purpose } });
-  if (!challenge) throw fail("OTP challenge not found.", 404);
-  if (challenge.consumedAt) throw fail("This OTP has already been used.", 409);
-  if (challenge.expiresAt <= new Date()) throw fail("OTP expired. Request a new code.", 410);
-  if (challenge.attempts >= challenge.maxAttempts) throw fail("Maximum OTP attempts reached.", 429);
+  if (!challenge) throw fail("OTP challenge not found.", 404, "NOT_FOUND");
+  if (challenge.consumedAt) throw fail("This OTP has already been used.", 409, "ALREADY_USED");
+  if (challenge.expiresAt <= new Date()) throw fail("OTP expired. Request a new code.", 410, "EXPIRED");
+  if (challenge.attempts >= challenge.maxAttempts) throw fail("Maximum OTP attempts reached.", 429, "MAX_ATTEMPTS");
   
   const valid = safeEqualHex(hashOtp(otp, env.OTP_SECRET), challenge.otpHash);
   if (!valid) {
     const updated = await prisma.otpChallenge.update({ where: { id: challenge.id }, data: { attempts: { increment: 1 } } });
-    if (updated.attempts >= updated.maxAttempts) throw fail("Maximum OTP attempts reached.", 429);
-    throw fail("Invalid OTP.", 400, { attemptsRemaining: updated.maxAttempts - updated.attempts });
+    if (updated.attempts >= updated.maxAttempts) throw fail("Maximum OTP attempts reached.", 429, "MAX_ATTEMPTS");
+    throw fail("Invalid OTP.", 400, "INVALID_OTP", { attemptsRemaining: updated.maxAttempts - updated.attempts });
   }
   return challenge;
 }
